@@ -1,0 +1,159 @@
+
+======================================================================
+  1) อ่านข้อมูลดิบ
+======================================================================
+อ่านมา 185 แถว
+
+======================================================================
+  2) ทำความสะอาดข้อความ
+======================================================================
+ตัดช่องว่างหัวท้ายไป 121 ช่อง และบีบช่องว่างกลางข้อความ
+
+======================================================================
+  3) สร้าง key สำหรับจับกลุ่ม
+======================================================================
+จำนวนค่าไม่ซ้ำ ก่อน -> หลัง normalize:
+  Customer_Name :  33 ->  18
+  Email         :  30 ->  18
+  Product       :  29 ->  12
+  Category      :  10 ->   5
+
+ส่วนต่างคือลูกค้าและสินค้าปลอมที่เกิดจากสะกดไม่ตรงกัน
+ไม่ทำขั้นนี้ ลูกค้าคนเดียวจะถูกนับเป็น 2-3 คนในคลัง
+
+======================================================================
+  4) ลบแถวซ้ำ
+======================================================================
+185 -> 180 แถว (ลบ 5)
+Order_ID ที่ลบ: ['ORD-0012', 'ORD-0020', 'ORD-0045', 'ORD-0096', 'ORD-0134']
+
+Order_ID ไม่ซ้ำแล้ว (180 ค่า) ใช้เป็น PK ของ fact ได้
+
+======================================================================
+  5) เติมค่าที่หายไป
+======================================================================
+เติมได้เฉพาะเมื่อมีหลักฐานในไฟล์เดียวกัน และต้องพิสูจน์ก่อนว่าเป็น 1:1 จริง
+ถ้าไม่ใช่ 1:1 ให้โปรแกรมหยุด ไม่เดาต่อ
+
+ก่อนเติม: Customer_Name 2 | Email 1 | Category 1
+
+lookup name -> email : 18 รายการ เป็น 1:1 ทุกตัว
+    ORD-0119 ชื่อ 'Jane Smith' -> เติม 'jane@email.com'
+lookup email -> name : 18 รายการ เป็น 1:1 ทุกตัว
+    ORD-0087 email 'alice.w@email.com' -> จับเข้ากลุ่ม 'alice wong'
+    ORD-0023 email 'michael.t@email.com' -> จับเข้ากลุ่ม 'michael tan'
+lookup product -> category : 12 รายการ เป็น 1:1 ทุกตัว
+    ORD-0146 สินค้า 'Portable SSD 1TB' -> เติม 'storage'
+เติมจากหลักฐานได้ครบทุกช่อง ไม่ต้องใช้ Unknown
+
+หลังเติม: customer_key 0 | name_key 0 | category_key 0
+
+======================================================================
+  6) แปลงวันที่
+======================================================================
+แปลงครบทั้ง 180 แถว ไม่เหลือค่าที่แปลงไม่ได้
+ช่วงวันที่ : 2026-01-02 ถึง 2026-04-30
+วันที่ไม่ซ้ำ : 92 วัน
+
+ตัวอย่าง (ฟอร์แมตต่างกันแต่ได้ผลถูก):
+  24/04/2026      -> 2026-04-24
+  Apr 03, 2026    -> 2026-04-03
+  11/04/2026      -> 2026-04-11
+  13/03/2026      -> 2026-03-13
+  2026-02-28      -> 2026-02-28
+  07/04/2026      -> 2026-04-07
+
+======================================================================
+  7) dim_customer
+======================================================================
+18 แถว (จากชื่อที่สะกดต่างกัน 33 แบบ)
+
+ customer_id customer_name                email
+           1    Alice Wong    alice.w@email.com
+           2    Bob Martin bob.martin@email.com
+           3    Daniel Lee daniel.lee@email.com
+           4    Emma Brown emma.brown@email.com
+           5    Jane Smith       jane@email.com
+           6      John Doe       john@email.com
+           7    Kanya Pool kanya.pool@email.com
+           8      Krit Som   krit.som@email.com
+           9    Linda Park linda.park@email.com
+          10     Mali Chan  mali.chan@email.com
+          11   Michael Tan  michael.t@email.com
+          12     Narin Dee  narin.dee@email.com
+          13      Nok Kwan   nok.kwan@email.com
+          14     Peter Kim  peter.kim@email.com
+          15     Ploy Kaew  ploy.kaew@email.com
+          16   Somchai Jai  somchai.j@email.com
+          17     Suda Chai  suda.chai@email.com
+          18  Thanawat Mee thanawat.m@email.com
+
+======================================================================
+  8) dim_product
+======================================================================
+12 แถว
+
+ product_id        product_name    category
+          1           Desk Lamp      Office
+          2     Ergonomic Chair   Furniture
+          3         Gel Pen Set  Stationery
+          4     Headphone Stand      Office
+          5        Laptop Stand      Office
+          6 Mechanical Keyboard Electronics
+          7     Monitor 24 inch Electronics
+          8         Notebook A5  Stationery
+          9    Portable SSD 1TB     Storage
+         10           USB-C Hub Electronics
+         11           Webcam HD Electronics
+         12      Wireless Mouse Electronics
+
+ไม่มีคอลัมน์ unit_price เพราะสินค้าชิ้นเดียวกันขายได้หลายราคา
+ชื่อสินค้าออกมาถูกต้อง ไม่ใช่ 'Usb-C Hub' หรือ 'Portable Ssd 1Tb'
+เพราะเลือกจากการสะกดที่มีอยู่จริง ไม่ได้ใช้ .str.title()
+
+======================================================================
+  9) dim_time
+======================================================================
+ปฏิทิน 2026-01-01 ถึง 2026-04-30 = 120 วัน
+วันที่ขายได้จริง 92 วัน ขายไม่ออก 28 วัน
+
+ที่ทำเป็นปฏิทินเต็มแทนการเอาเฉพาะวันที่มีข้อมูล เพราะ
+  วันที่ขายไม่ออก 28 วันจะหายไปจากคลัง ถามหาไม่ได้
+  กราฟรายวันจะกระโดดข้ามวัน ดูเหมือนขายได้ทุกวันซึ่งไม่จริง
+  dim_time เป็น dimension เดียวที่ไม่ควรขึ้นกับ fact สร้างครั้งเดียวจบ
+
+ date_key  full_date  year  quarter  month month_name  day weekday_name  is_weekend
+ 20260101 2026-01-01  2026        1      1    January    1     Thursday           0
+ 20260102 2026-01-02  2026        1      1    January    2       Friday           0
+ 20260103 2026-01-03  2026        1      1    January    3     Saturday           1
+ 20260104 2026-01-04  2026        1      1    January    4       Sunday           1
+ 20260105 2026-01-05  2026        1      1    January    5       Monday           0
+ 20260106 2026-01-06  2026        1      1    January    6      Tuesday           0
+ 20260107 2026-01-07  2026        1      1    January    7    Wednesday           0
+ 20260108 2026-01-08  2026        1      1    January    8     Thursday           0
+
+======================================================================
+  10) ตารางหลักส่งต่อให้ 2B
+======================================================================
+180 แถว พร้อม key สำหรับ join ครบ 3 ตัว
+
+order_id         customer_key         product_key  date_key quantity unit_price_raw amount_raw
+ORD-0036 emma.brown@email.com     monitor 24 inch  20260424        1        4131.00   4,131.00
+ORD-0076 linda.park@email.com mechanical keyboard  20260403        5        1669.50    8347.50
+ORD-0101       john@email.com      wireless mouse  20260411        3         405.00        NaN
+ORD-0059       jane@email.com      wireless mouse  20260313        2         405.00    ฿810.00
+ORD-0038  peter.kim@email.com         gel pen set  20260228        5          85.50     427.50
+ORD-0053       jane@email.com     monitor 24 inch  20260407        3       4,819.50  14,458.50
+ORD-0157  michael.t@email.com         gel pen set  20260413        3          90.25        NaN
+ORD-0138   nok.kwan@email.com     ergonomic chair  20260421        4        6290.00 ฿25,160.00
+
+unit_price กับ amount ยังเป็นข้อความ ตั้งใจปล่อยไว้ให้ 2B จัดการ
+เพราะการแปลงตัวเลขและเติม amount เป็นเรื่องของ fact
+
+======================================================================
+  11) บันทึกผลลัพธ์
+======================================================================
+  dim_customer.csv           18 แถว
+  dim_product.csv            12 แถว
+  dim_time.csv              120 แถว
+  02a_clean_orders.csv      180 แถว

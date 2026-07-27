@@ -1,0 +1,231 @@
+
+======================================================================
+  1) อ่านไฟล์ดิบ
+======================================================================
+ไฟล์ : D:\งาน\data_ware\Workshop\raw_ecommerce_data.csv
+ขนาด : 185 แถว x 9 คอลัมน์
+
+--- 10 แถวแรก ---
+   Order_ID Customer_Name                 Email              Product     Category    Order_Date Quantity Unit_Price      Amount
+0  ORD-0036   Emma Brown   emma.brown@email.com      Monitor 24 inch  Electronics    24/04/2026        1    4131.00    4,131.00
+1  ORD-0076    linda park  linda.park@email.com  Mechanical Keyboard  Electronics  Apr 03, 2026        5    1669.50     8347.50
+2  ORD-0101      john doe       john@email.com        Wireless Mouse  Electronics    11/04/2026        3     405.00         NaN
+3  ORD-0059    Jane Smith        jane@email.com       Wireless Mouse  ELECTRONICS    13/03/2026        2     405.00     ฿810.00
+4  ORD-0038     PETER KIM   peter.kim@email.com          Gel Pen Set   Stationery    2026-02-28        5      85.50      427.50
+5  ORD-0053   Jane Smith         jane@email.com     Monitor 24 inch   Electronics    07/04/2026        3   4,819.50   14,458.50
+6  ORD-0157   Michael Tan   michael.t@email.com          Gel Pen Set   Stationery  Apr 13, 2026        3      90.25         NaN
+7  ORD-0138      Nok Kwan    nok.kwan@email.com      Ergonomic Chair    Furniture    21/04/2026        4    6290.00  ฿25,160.00
+8  ORD-0136      Krit Som    krit.som@email.com            USB-C Hub  Electronics  Mar 19, 2026        1     845.50      845.50
+9  ORD-0029    Emma Brown  emma.brown@email.com      headphone stand       Office  Apr 02, 2026        1     546.00      546.00
+
+======================================================================
+  2) ชนิดข้อมูล
+======================================================================
+Order_ID         object
+Customer_Name    object
+Email            object
+Product          object
+Category         object
+Order_Date       object
+Quantity         object
+Unit_Price       object
+Amount           object
+
+ทุกคอลัมน์เป็น object เพราะบังคับ dtype=str ไว้
+
+--- describe ---
+        Order_ID Customer_Name                Email              Product     Category  Order_Date Quantity Unit_Price  Amount
+count        185           183                  184                  185          184         185      185        185     142
+unique       180            46                   40                   38           15         135        5         63     126
+top     ORD-0012     Peter Kim  peter.kim@email.com  Mechanical Keyboard  Electronics  2026-03-01        3     750.50  427.50
+freq           2            13                   15                   18           77           4       41          7       3
+
+======================================================================
+  3) ค่าที่หายไป
+======================================================================
+               missing  percent
+Order_ID             0     0.00
+Customer_Name        2     1.08
+Email                1     0.54
+Product              0     0.00
+Category             1     0.54
+Order_Date           0     0.00
+Quantity             0     0.00
+Unit_Price           0     0.00
+Amount              43    23.24
+
+Amount หายเยอะสุด ต้องหาว่ามีสูตรคำนวณกลับได้ไหม
+ที่เหลือหายไม่กี่แถว ดูว่ากู้จากแถวอื่นได้หรือเปล่า
+
+======================================================================
+  4) Cardinality
+======================================================================
+               nunique  ratio_to_rows
+Order_ID           180          0.973
+Customer_Name       46          0.249
+Email               40          0.216
+Product             38          0.205
+Category            15          0.081
+Order_Date         135          0.730
+Quantity             5          0.027
+Unit_Price          63          0.341
+Amount             126          0.681
+
+ใช้ตัดสินว่าคอลัมน์ไหนควรเป็นอะไรใน star schema:
+  ค่าซ้ำเยอะ nunique ต่ำ   -> เป็นบริบท ควรแยกไป dimension
+  nunique เท่าจำนวนแถว     -> เป็นตัวระบุรายการ
+  ตัวเลขที่วัดค่าได้        -> เป็น measure อยู่ใน fact
+
+======================================================================
+  5) ข้อมูลซ้ำ
+======================================================================
+ซ้ำสนิทแบบดิบ (ไม่ normalize) : 4
+ซ้ำสนิทหลัง strip + lower      : 5
+Order_ID ที่ซ้ำ                : 5
+
+--- แถวที่ Order_ID ซ้ำ ---
+     Order_ID Customer_Name                 Email           Product     Category    Order_Date Quantity Unit_Price    Amount
+51   ORD-0012   michael tan   michael.t@email.com       gel pen set   stationery    27/01/2026        4      85.50   ฿342.00
+68   ORD-0012   michael tan   michael.t@email.com       gel pen set   stationery    27/01/2026        4      85.50   ฿342.00
+120  ORD-0020     peter kim   peter.kim@email.com   headphone stand       office  Feb 13, 2026        3     494.00       NaN
+142  ORD-0020     peter kim   peter.kim@email.com   headphone stand       office  Feb 13, 2026        3     494.00       NaN
+69   ORD-0045    emma brown  emma.brown@email.com    wireless mouse  electronics  Apr 02, 2026        5     427.50  2,137.50
+98   ORD-0045    emma brown  emma.brown@email.com    wireless mouse  electronics  Apr 02, 2026        5     427.50  2,137.50
+33   ORD-0096     ploy kaew   ploy.kaew@email.com   headphone stand       office    25/03/2026        4     494.00   1976.00
+166  ORD-0096     ploy kaew   ploy.kaew@email.com   headphone stand       office    25/03/2026        4     494.00   1976.00
+95   ORD-0134   somchai jai   somchai.j@email.com  portable ssd 1tb      storage    2026-01-16        2    3034.50   6069.00
+154  ORD-0134   somchai jai   somchai.j@email.com  portable ssd 1tb      storage    2026-01-16        2    3034.50   6069.00
+
+ตัวเลขสองอันแรกไม่เท่ากัน แปลว่ามีแถวที่ซ้ำจริงแต่มองด้วยตาไม่เห็น
+เพราะต่างกันแค่ช่องว่างหรือตัวพิมพ์ ต้อง normalize ก่อนถึงจะ dedup ได้ครบ
+
+======================================================================
+  6) ฟอร์แมตของ Order_Date
+======================================================================
+  DD/MM/YYYY   (24/04/2026)        :  61 แถว
+  YYYY-MM-DD   (2026-02-28)        :  63 แถว
+  Mon DD, YYYY (Apr 03, 2026)      :  61 แถว
+  ไม่ตรง pattern ใดเลย             :   0 แถว
+
+เช็คว่า DD/MM/YYYY เป็นวันขึ้นก่อนจริงไหม:
+  เลขตัวหน้า > 12 : 40 แถว  (ถ้ามี แปลว่าตัวหน้าคือวัน)
+  เลขตัวหลัง > 12 : 0 แถว  (ถ้าไม่มี แปลว่าตัวหลังคือเดือน)
+
+อันตรายตรงนี้: pd.to_datetime() ตั้ง dayfirst=False ไว้เป็นค่าเริ่มต้น
+ปล่อยให้เดาเอง '03/04/2026' จะกลายเป็น 4 มีนาคมแทน 3 เมษายน
+ยอดขายรายเดือนเพี้ยนทันทีโดยไม่มี error ฟ้อง
+ต้องแยก parse ทีละ pattern แล้วเช็คว่าไม่เหลือ NaT
+
+======================================================================
+  7) whitespace และตัวพิมพ์
+======================================================================
+--- แถวที่มีช่องว่างหัวหรือท้าย ---
+  Customer_Name   :  27 แถว
+  Email           :  18 แถว
+  Product         :  17 แถว
+  Category        :  12 แถว
+
+--- ค่าที่สะกดตัวพิมพ์ไม่ตรงกัน ---
+  Customer_Name : 15 ค่า
+      'alice wong'                 (2 แบบ) ['ALICE WONG', 'Alice Wong']
+      'bob martin'                 (2 แบบ) ['BOB MARTIN', 'Bob Martin']
+      'daniel lee'                 (2 แบบ) ['DANIEL LEE', 'Daniel Lee']
+      'jane smith'                 (2 แบบ) ['Jane Smith', 'jane smith']
+      'john doe'                   (2 แบบ) ['John Doe', 'john doe']
+      'kanya pool'                 (2 แบบ) ['KANYA POOL', 'Kanya Pool']
+      'krit som'                   (2 แบบ) ['Krit Som', 'krit som']
+      'linda park'                 (2 แบบ) ['Linda Park', 'linda park']
+      'mali chan'                  (2 แบบ) ['MALI CHAN', 'Mali Chan']
+      'michael tan'                (2 แบบ) ['MICHAEL TAN', 'Michael Tan']
+      'nok kwan'                   (2 แบบ) ['Nok Kwan', 'nok kwan']
+      'peter kim'                  (2 แบบ) ['PETER KIM', 'Peter Kim']
+      'ploy kaew'                  (2 แบบ) ['PLOY KAEW', 'Ploy Kaew']
+      'suda chai'                  (2 แบบ) ['SUDA CHAI', 'Suda Chai']
+      'thanawat mee'               (2 แบบ) ['Thanawat Mee', 'thanawat mee']
+  Email : 12 ค่า
+      'alice.w@email.com'          (2 แบบ) ['ALICE.W@EMAIL.COM', 'alice.w@email.com']
+      'daniel.lee@email.com'       (2 แบบ) ['DANIEL.LEE@EMAIL.COM', 'daniel.lee@email.com']
+      'emma.brown@email.com'       (2 แบบ) ['EMMA.BROWN@EMAIL.COM', 'emma.brown@email.com']
+      'jane@email.com'             (2 แบบ) ['JANE@EMAIL.COM', 'jane@email.com']
+      'john@email.com'             (2 แบบ) ['JOHN@EMAIL.COM', 'john@email.com']
+      'kanya.pool@email.com'       (2 แบบ) ['KANYA.POOL@EMAIL.COM', 'kanya.pool@email.com']
+      'krit.som@email.com'         (2 แบบ) ['KRIT.SOM@EMAIL.COM', 'krit.som@email.com']
+      'michael.t@email.com'        (2 แบบ) ['MICHAEL.T@EMAIL.COM', 'michael.t@email.com']
+      'narin.dee@email.com'        (2 แบบ) ['NARIN.DEE@EMAIL.COM', 'narin.dee@email.com']
+      'nok.kwan@email.com'         (2 แบบ) ['NOK.KWAN@EMAIL.COM', 'nok.kwan@email.com']
+      'peter.kim@email.com'        (2 แบบ) ['PETER.KIM@EMAIL.COM', 'peter.kim@email.com']
+      'suda.chai@email.com'        (2 แบบ) ['SUDA.CHAI@EMAIL.COM', 'suda.chai@email.com']
+  Product : 11 ค่า
+      'desk lamp'                  (2 แบบ) ['DESK LAMP', 'Desk Lamp']
+      'ergonomic chair'            (3 แบบ) ['ERGONOMIC CHAIR', 'Ergonomic Chair', 'ergonomic chair']
+      'gel pen set'                (2 แบบ) ['Gel Pen Set', 'gel pen set']
+      'headphone stand'            (3 แบบ) ['HEADPHONE STAND', 'Headphone Stand', 'headphone stand']
+      'laptop stand'               (3 แบบ) ['LAPTOP STAND', 'Laptop Stand', 'laptop stand']
+      'mechanical keyboard'        (2 แบบ) ['MECHANICAL KEYBOARD', 'Mechanical Keyboard']
+      'monitor 24 inch'            (2 แบบ) ['MONITOR 24 INCH', 'Monitor 24 inch']
+      'portable ssd 1tb'           (3 แบบ) ['PORTABLE SSD 1TB', 'Portable SSD 1TB', 'portable ssd 1tb']
+      'usb-c hub'                  (2 แบบ) ['USB-C HUB', 'USB-C Hub']
+      'webcam hd'                  (3 แบบ) ['WEBCAM HD', 'Webcam HD', 'webcam hd']
+      'wireless mouse'             (3 แบบ) ['WIRELESS MOUSE', 'Wireless Mouse', 'wireless mouse']
+  Category : 5 ค่า
+      'electronics'                (2 แบบ) ['ELECTRONICS', 'Electronics']
+      'furniture'                  (2 แบบ) ['FURNITURE', 'Furniture']
+      'office'                     (2 แบบ) ['OFFICE', 'Office']
+      'stationery'                 (2 แบบ) ['STATIONERY', 'Stationery']
+      'storage'                    (2 แบบ) ['STORAGE', 'Storage']
+
+======================================================================
+  8) ตัวเลขที่ยังเป็นข้อความ
+======================================================================
+--- Unit_Price ---
+  มี ฿  :   0 แถว
+  มี ,  :  17 แถว
+  ตัวอย่าง : ['4,819.50', '4,131.00', '1,510.50', '1,354.50', '6,604.50']
+
+--- Amount ---
+  มี ฿  :  48 แถว
+  มี ,  :  77 แถว
+  ตัวอย่าง : ['4,131.00', '฿810.00', '14,458.50', '฿25,160.00', '฿180.50']
+
+ทั้งสองคอลัมน์ยังคำนวณไม่ได้ ต้องลอก ฿ กับ , ออกก่อนใน Step 2B
+
+======================================================================
+  9) Unit_Price ควรอยู่ที่ไหน
+======================================================================
+                     distinct_price  n_orders
+Product                                      
+webcam hd                         8        16
+mechanical keyboard               8        25
+monitor 24 inch                   7        18
+portable ssd 1tb                  7        17
+ergonomic chair                   5        16
+headphone stand                   4        15
+desk lamp                         4        15
+gel pen set                       4        19
+notebook a5                       4         6
+laptop stand                      4        13
+usb-c hub                         4        11
+wireless mouse                    4        14
+
+สินค้าชิ้นเดียวกันขายได้หลายราคา (ราคาเปลี่ยนตามเวลาหรือโปรโมชั่น)
+
+  เอาเข้า dim_product     -> dimension บวมเป็น 63 แถว
+  ไม่เอาเข้า              -> เหลือ 12 แถวตามจำนวนสินค้าจริง
+
+ราคาที่ขายจริง ณ ตอนนั้นเป็น measure ของธุรกรรม ไม่ใช่คุณสมบัติถาวรของสินค้า
+จึงต้องอยู่ใน fact_sales
+
+======================================================================
+  10) สรุปปัญหาและขั้นที่จะแก้
+======================================================================
+  แถวซ้ำ 5 แถว (ซ่อนอยู่ใต้ whitespace/case)   -> 2A
+  ช่องว่างหัวท้ายกระจายหลายคอลัมน์                -> 2A
+  ตัวพิมพ์ใหญ่เล็กไม่ตรงกัน                        -> 2A
+  Customer_Name หาย 2 แถว                          -> 2A
+  Email หาย 1 แถว                                 -> 2A
+  Category หาย 1 แถว                              -> 2A
+  Order_Date มี 3 ฟอร์แมตปนกัน                      -> 2A
+  Unit_Price / Amount เป็นข้อความมี ฿ และ ,        -> 2B
+  Amount หาย 43 แถว                                -> 2B
+
+ไฟล์ต้นฉบับยังไม่ถูกแก้ไขใด ๆ

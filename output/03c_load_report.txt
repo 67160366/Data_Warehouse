@@ -1,0 +1,121 @@
+
+======================================================================
+  1) อ่านข้อมูลที่เตรียมไว้
+======================================================================
+  dim_customer     18 แถว
+  dim_product      12 แถว
+  dim_time        120 แถว
+  fact_sales      180 แถว
+
+======================================================================
+  2) ลำดับการลบและการโหลด
+======================================================================
+กฎเดียวที่ต้องรักษาไว้คือ ห้ามมีแถวใน fact ที่ชี้ไปหา dimension ที่ไม่มีตัวตน
+จากกฎนี้ได้ลำดับที่สลับกันพอดี:
+
+  ลบ   fact ก่อน dimension
+       ถ้าลบ dim_customer ก่อน แถวใน fact จะกลายเป็นเด็กกำพร้าทันที
+
+  โหลด dimension ก่อน fact
+       ถ้าโหลด fact ก่อน จะไม่มี customer_id ให้ชี้ไปหา
+
+ทำผิดลำดับทั้งสองกรณีจะเจอ FOREIGN KEY constraint failed เหมือนกัน
+
+======================================================================
+  3) โหลดข้อมูล
+======================================================================
+foreign_keys = 1
+จำนวนแถวก่อนโหลด : {'dim_customer': 18, 'dim_product': 12, 'dim_time': 120, 'fact_sales': 180}
+
+ล้างของเดิม:
+  DELETE FROM fact_sales     180 แถว
+  DELETE FROM dim_customer   18 แถว
+  DELETE FROM dim_product    12 แถว
+  DELETE FROM dim_time       120 แถว
+
+โหลดใหม่:
+  to_sql dim_customer   18 แถว
+  to_sql dim_product    12 แถว
+  to_sql dim_time       120 แถว
+  to_sql fact_sales     180 แถว
+
+commit สำเร็จ
+
+======================================================================
+  4) เทียบจำนวนแถว
+======================================================================
+  ตาราง             จาก CSV  ใน SQLite
+  dim_customer           18         18
+  dim_product            12         12
+  dim_time              120        120
+  fact_sales            180        180
+
+======================================================================
+  5) ทำไมไม่ใช้ if_exists='replace'
+======================================================================
+ทดลองในฐานข้อมูลชั่วคราวในหน่วยความจำ ไม่แตะคลังจริง
+
+  schema ที่เราออกแบบไว้:
+    name           type      notnull  pk
+    customer_id    INTEGER   0        1
+    customer_name  TEXT      1        0
+    email          TEXT      1        0
+
+  หลังใช้ replace:
+    name           type      notnull  pk
+    customer_id    INTEGER   0        0
+    customer_name  TEXT      0        0
+    email          TEXT      0        0
+
+pk หายหมด notnull หายหมด UNIQUE บน email ก็หาย
+เพราะ replace ทำงานสามขั้น: DROP TABLE -> CREATE จาก dtype ของ DataFrame -> INSERT
+แปลว่างานใน 3A กับ 3B สูญเปล่า และ step 4 ที่จะทดสอบ FK ก็ไม่มีความหมาย
+
+ยังมีปัญหาที่สอง ลองใช้กับตารางที่มี fact อ้างอิงอยู่จริง:
+  sqlite3.IntegrityError: FOREIGN KEY constraint failed
+  SQLite ปฏิเสธเพราะ fact_sales ยังอ้างอิง dim_customer อยู่
+  แปลว่า replace ไม่ใช่แค่ทำ schema หาย แต่รันไม่ผ่านเลย
+  (ข้อนี้จะเกิดก็ต่อเมื่อเปิด PRAGMA foreign_keys ไว้ ลืมเปิดเมื่อไหร่
+   DROP จะผ่านฉลุยและ schema พังเงียบ ๆ)
+
+คู่ที่ถูกคือ DELETE FROM (ล้างข้อมูลแต่เก็บ schema) + to_sql(if_exists='append')
+
+======================================================================
+  6) ตัวอย่างข้อมูลในคลัง
+======================================================================
+--- dim_customer ---
+  ['customer_id', 'customer_name', 'email']
+  (1, 'Alice Wong', 'alice.w@email.com')
+  (2, 'Bob Martin', 'bob.martin@email.com')
+  (3, 'Daniel Lee', 'daniel.lee@email.com')
+
+--- dim_product ---
+  ['product_id', 'product_name', 'category']
+  (1, 'Desk Lamp', 'Office')
+  (2, 'Ergonomic Chair', 'Furniture')
+  (3, 'Gel Pen Set', 'Stationery')
+
+--- dim_time ---
+  ['date_key', 'full_date', 'year', 'quarter', 'month', 'month_name', 'day', 'weekday_name', 'is_weekend']
+  (20260101, '2026-01-01', 2026, 1, 1, 'January', 1, 'Thursday', 0)
+  (20260102, '2026-01-02', 2026, 1, 1, 'January', 2, 'Friday', 0)
+  (20260103, '2026-01-03', 2026, 1, 1, 'January', 3, 'Saturday', 1)
+
+--- fact_sales ---
+  ['order_id', 'customer_id', 'product_id', 'date_key', 'quantity', 'unit_price', 'amount']
+  ('ORD-0001', 16, 12, 20260318, 1, 472.5, 472.5)
+  ('ORD-0002', 13, 12, 20260122, 1, 427.5, 427.5)
+  ('ORD-0003', 6, 3, 20260407, 3, 95.0, 285.0)
+
+ยอดขายรวมในคลัง : 918,184.75 บาท (ต้องตรงกับที่ 2B รายงานไว้)
+
+======================================================================
+  7) idempotency
+======================================================================
+ลองรันสคริปต์นี้อีกรอบ จำนวนแถวต้องเท่าเดิม:
+  dim_customer     18 แถว ไม่ใช่ 36
+  dim_product      12 แถว ไม่ใช่ 24
+  dim_time         120 แถว ไม่ใช่ 240
+  fact_sales       180 แถว ไม่ใช่ 360
+
+ถ้าไม่มี DELETE FROM ข้างบน รอบสองจะได้สองเท่า รอบสามสามเท่า และไม่มี error ฟ้อง

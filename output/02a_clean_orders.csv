@@ -1,0 +1,181 @@
+﻿order_id,customer_key,product_key,date_key,quantity,unit_price_raw,amount_raw
+ORD-0036,emma.brown@email.com,monitor 24 inch,20260424,1,4131.00,"4,131.00"
+ORD-0076,linda.park@email.com,mechanical keyboard,20260403,5,1669.50,8347.50
+ORD-0101,john@email.com,wireless mouse,20260411,3,405.00,
+ORD-0059,jane@email.com,wireless mouse,20260313,2,405.00,฿810.00
+ORD-0038,peter.kim@email.com,gel pen set,20260228,5,85.50,427.50
+ORD-0053,jane@email.com,monitor 24 inch,20260407,3,"4,819.50","14,458.50"
+ORD-0157,michael.t@email.com,gel pen set,20260413,3,90.25,
+ORD-0138,nok.kwan@email.com,ergonomic chair,20260421,4,6290.00,"฿25,160.00"
+ORD-0136,krit.som@email.com,usb-c hub,20260319,1,845.50,845.50
+ORD-0029,emma.brown@email.com,headphone stand,20260402,1,546.00,546.00
+ORD-0056,thanawat.m@email.com,gel pen set,20260116,2,90.25,฿180.50
+ORD-0091,ploy.kaew@email.com,notebook a5,20260314,4,126.00,
+ORD-0047,daniel.lee@email.com,webcam hd,20260104,1,1225.50,"฿1,225.50"
+ORD-0151,somchai.j@email.com,laptop stand,20260303,5,790.00,"฿3,950.00"
+ORD-0097,linda.park@email.com,ergonomic chair,20260127,1,6290.00,"฿6,290.00"
+ORD-0028,daniel.lee@email.com,usb-c hub,20260224,4,934.50,"3,738.00"
+ORD-0137,narin.dee@email.com,webcam hd,20260310,1,1290.00,
+ORD-0037,ploy.kaew@email.com,laptop stand,20260104,1,750.50,฿750.50
+ORD-0141,somchai.j@email.com,usb-c hub,20260324,1,934.50,934.50
+ORD-0149,daniel.lee@email.com,laptop stand,20260409,2,711.00,"฿1,422.00"
+ORD-0022,mali.chan@email.com,ergonomic chair,20260412,3,5661.00,"฿16,983.00"
+ORD-0032,suda.chai@email.com,mechanical keyboard,20260301,1,1431.00,1431.00
+ORD-0006,michael.t@email.com,ergonomic chair,20260323,4,6290.00,"฿25,160.00"
+ORD-0017,narin.dee@email.com,gel pen set,20260126,4,99.75,399.00
+ORD-0148,ploy.kaew@email.com,desk lamp,20260117,5,650.00,"3,250.00"
+ORD-0142,alice.w@email.com,ergonomic chair,20260224,1,5975.50,"5,975.50"
+ORD-0146,kanya.pool@email.com,portable ssd 1tb,20260319,2,2745.50,"฿5,491.00"
+ORD-0175,peter.kim@email.com,monitor 24 inch,20260218,5,4131.00,"฿20,655.00"
+ORD-0089,john@email.com,portable ssd 1tb,20260226,2,2601.00,"฿5,202.00"
+ORD-0066,linda.park@email.com,headphone stand,20260108,1,520.00,
+ORD-0112,suda.chai@email.com,headphone stand,20260426,3,468.00,
+ORD-0065,bob.martin@email.com,desk lamp,20260301,5,650.00,"฿3,250.00"
+ORD-0044,mali.chan@email.com,laptop stand,20260222,4,750.50,"฿3,002.00"
+ORD-0096,ploy.kaew@email.com,headphone stand,20260325,4,494.00,1976.00
+ORD-0161,peter.kim@email.com,monitor 24 inch,20260115,2,4590.00,9180.00
+ORD-0049,nok.kwan@email.com,portable ssd 1tb,20260329,3,2745.50,"฿8,236.50"
+ORD-0143,peter.kim@email.com,ergonomic chair,20260320,1,6290.00,"฿6,290.00"
+ORD-0015,john@email.com,mechanical keyboard,20260102,2,1431.00,
+ORD-0058,peter.kim@email.com,mechanical keyboard,20260410,3,1510.50,"4,531.50"
+ORD-0055,thanawat.m@email.com,mechanical keyboard,20260330,4,1431.00,5724.00
+ORD-0088,nok.kwan@email.com,gel pen set,20260122,5,85.50,427.50
+ORD-0106,narin.dee@email.com,mechanical keyboard,20260116,5,1510.50,"฿7,552.50"
+ORD-0002,nok.kwan@email.com,wireless mouse,20260122,1,427.50,427.50
+ORD-0153,peter.kim@email.com,gel pen set,20260201,1,90.25,90.25
+ORD-0048,alice.w@email.com,desk lamp,20260220,1,682.50,
+ORD-0004,bob.martin@email.com,mechanical keyboard,20260414,2,1510.50,"฿3,021.00"
+ORD-0115,jane@email.com,notebook a5,20260406,4,120.00,480.00
+ORD-0127,ploy.kaew@email.com,laptop stand,20260301,2,750.50,"1,501.00"
+ORD-0102,krit.som@email.com,monitor 24 inch,20260131,2,"4,131.00","฿8,262.00"
+ORD-0009,ploy.kaew@email.com,gel pen set,20260408,2,85.50,171.00
+ORD-0169,emma.brown@email.com,mechanical keyboard,20260307,3,"1,510.50",4531.50
+ORD-0012,michael.t@email.com,gel pen set,20260127,4,85.50,฿342.00
+ORD-0131,emma.brown@email.com,usb-c hub,20260401,5,801.00,"฿4,005.00"
+ORD-0099,krit.som@email.com,ergonomic chair,20260401,1,5661.00,
+ORD-0176,alice.w@email.com,notebook a5,20260409,1,114.00,114.00
+ORD-0166,alice.w@email.com,monitor 24 inch,20260414,4,4590.00,18360.00
+ORD-0120,narin.dee@email.com,gel pen set,20260307,3,95.00,285.00
+ORD-0168,nok.kwan@email.com,desk lamp,20260114,5,650.00,"3,250.00"
+ORD-0140,jane@email.com,ergonomic chair,20260220,3,5975.50,"฿17,926.50"
+ORD-0132,michael.t@email.com,portable ssd 1tb,20260322,2,2745.50,
+ORD-0159,thanawat.m@email.com,portable ssd 1tb,20260216,1,2745.50,"฿2,745.50"
+ORD-0013,nok.kwan@email.com,headphone stand,20260415,4,520.00,
+ORD-0156,daniel.lee@email.com,desk lamp,20260416,3,617.50,1852.50
+ORD-0135,peter.kim@email.com,webcam hd,20260203,2,"1,354.50",2709.00
+ORD-0129,mali.chan@email.com,gel pen set,20260317,4,99.75,399.00
+ORD-0030,john@email.com,desk lamp,20260217,5,682.50,3412.50
+ORD-0144,peter.kim@email.com,wireless mouse,20260210,5,405.00,"฿2,025.00"
+ORD-0046,peter.kim@email.com,portable ssd 1tb,20260303,4,2601.00,"฿10,404.00"
+ORD-0045,emma.brown@email.com,wireless mouse,20260402,5,427.50,"2,137.50"
+ORD-0034,linda.park@email.com,webcam hd,20260106,4,1354.50,5418.00
+ORD-0024,narin.dee@email.com,ergonomic chair,20260421,1,"6,604.50",6604.50
+ORD-0152,narin.dee@email.com,monitor 24 inch,20260418,3,4360.50,"13,081.50"
+ORD-0060,alice.w@email.com,desk lamp,20260116,2,585.00,1170.00
+ORD-0109,john@email.com,monitor 24 inch,20260213,4,4360.50,"฿17,442.00"
+ORD-0031,peter.kim@email.com,webcam hd,20260222,3,"1,161.00",
+ORD-0050,linda.park@email.com,mechanical keyboard,20260215,5,1590.00,"7,950.00"
+ORD-0128,krit.som@email.com,notebook a5,20260106,2,108.00,
+ORD-0104,alice.w@email.com,laptop stand,20260320,2,790.00,"1,580.00"
+ORD-0150,linda.park@email.com,mechanical keyboard,20260320,2,1590.00,"฿3,180.00"
+ORD-0061,kanya.pool@email.com,ergonomic chair,20260114,3,5975.50,"17,926.50"
+ORD-0070,ploy.kaew@email.com,mechanical keyboard,20260307,2,1669.50,"3,339.00"
+ORD-0130,michael.t@email.com,desk lamp,20260430,2,682.50,1365.00
+ORD-0107,nok.kwan@email.com,headphone stand,20260304,1,468.00,
+ORD-0172,michael.t@email.com,mechanical keyboard,20260312,2,1431.00,"2,862.00"
+ORD-0178,linda.park@email.com,headphone stand,20260325,2,520.00,"฿1,040.00"
+ORD-0119,jane@email.com,ergonomic chair,20260205,4,5975.50,23902.00
+ORD-0027,daniel.lee@email.com,gel pen set,20260219,2,95.00,฿190.00
+ORD-0074,linda.park@email.com,wireless mouse,20260418,5,405.00,
+ORD-0084,krit.som@email.com,usb-c hub,20260210,2,934.50,"฿1,869.00"
+ORD-0177,krit.som@email.com,monitor 24 inch,20260404,3,4360.50,13081.50
+ORD-0117,emma.brown@email.com,laptop stand,20260103,5,750.50,"฿3,752.50"
+ORD-0077,daniel.lee@email.com,ergonomic chair,20260302,1,5975.50,"฿5,975.50"
+ORD-0021,john@email.com,desk lamp,20260128,3,650.00,1950.00
+ORD-0087,alice.w@email.com,notebook a5,20260323,4,108.00,฿432.00
+ORD-0134,somchai.j@email.com,portable ssd 1tb,20260116,2,3034.50,6069.00
+ORD-0108,krit.som@email.com,ergonomic chair,20260429,2,6290.00,"฿12,580.00"
+ORD-0057,mali.chan@email.com,wireless mouse,20260405,2,427.50,855.00
+ORD-0167,daniel.lee@email.com,notebook a5,20260422,4,126.00,504.00
+ORD-0124,alice.w@email.com,webcam hd,20260408,1,1225.50,"1,225.50"
+ORD-0071,bob.martin@email.com,gel pen set,20260104,2,90.25,
+ORD-0079,krit.som@email.com,monitor 24 inch,20260313,4,4131.00,
+ORD-0114,kanya.pool@email.com,monitor 24 inch,20260329,4,"4,131.00",16524.00
+ORD-0016,ploy.kaew@email.com,gel pen set,20260112,5,99.75,
+ORD-0163,thanawat.m@email.com,mechanical keyboard,20260429,2,1590.00,
+ORD-0035,narin.dee@email.com,wireless mouse,20260419,3,405.00,1215.00
+ORD-0007,jane@email.com,laptop stand,20260319,3,750.50,"2,251.50"
+ORD-0180,mali.chan@email.com,desk lamp,20260221,5,650.00,"3,250.00"
+ORD-0063,krit.som@email.com,usb-c hub,20260107,2,934.50,1869.00
+ORD-0001,somchai.j@email.com,wireless mouse,20260318,1,472.50,472.50
+ORD-0158,thanawat.m@email.com,headphone stand,20260407,3,546.00,"฿1,638.00"
+ORD-0014,daniel.lee@email.com,laptop stand,20260411,1,750.50,750.50
+ORD-0125,somchai.j@email.com,headphone stand,20260303,1,494.00,฿494.00
+ORD-0164,suda.chai@email.com,portable ssd 1tb,20260201,2,"2,890.00","5,780.00"
+ORD-0086,linda.park@email.com,mechanical keyboard,20260420,5,"1,431.00",7155.00
+ORD-0095,jane@email.com,webcam hd,20260316,5,1161.00,"฿5,805.00"
+ORD-0072,somchai.j@email.com,headphone stand,20260108,4,494.00,
+ORD-0081,alice.w@email.com,usb-c hub,20260127,3,890.00,2670.00
+ORD-0162,linda.park@email.com,monitor 24 inch,20260207,5,4131.00,
+ORD-0020,peter.kim@email.com,headphone stand,20260213,3,494.00,
+ORD-0147,ploy.kaew@email.com,portable ssd 1tb,20260205,1,2890.00,"2,890.00"
+ORD-0023,michael.t@email.com,gel pen set,20260413,1,95.00,
+ORD-0051,peter.kim@email.com,ergonomic chair,20260424,1,6604.50,
+ORD-0026,peter.kim@email.com,mechanical keyboard,20260212,3,1510.50,
+ORD-0155,john@email.com,mechanical keyboard,20260115,2,1431.00,"2,862.00"
+ORD-0103,bob.martin@email.com,webcam hd,20260413,2,1225.50,"2,451.00"
+ORD-0078,jane@email.com,portable ssd 1tb,20260309,1,"2,601.00",2601.00
+ORD-0011,alice.w@email.com,usb-c hub,20260301,3,934.50,2803.50
+ORD-0105,peter.kim@email.com,mechanical keyboard,20260210,4,1590.00,
+ORD-0010,thanawat.m@email.com,webcam hd,20260221,4,1161.00,"4,644.00"
+ORD-0075,john@email.com,laptop stand,20260315,1,829.50,
+ORD-0067,somchai.j@email.com,mechanical keyboard,20260106,2,1510.50,"3,021.00"
+ORD-0160,alice.w@email.com,laptop stand,20260225,5,750.50,"3,752.50"
+ORD-0082,ploy.kaew@email.com,desk lamp,20260220,5,650.00,
+ORD-0008,peter.kim@email.com,headphone stand,20260309,5,520.00,
+ORD-0043,michael.t@email.com,monitor 24 inch,20260423,5,4360.50,"฿21,802.50"
+ORD-0069,nok.kwan@email.com,laptop stand,20260404,5,829.50,"4,147.50"
+ORD-0080,narin.dee@email.com,ergonomic chair,20260119,4,5661.00,22644.00
+ORD-0174,somchai.j@email.com,portable ssd 1tb,20260422,5,2890.00,"฿14,450.00"
+ORD-0042,john@email.com,webcam hd,20260424,4,"1,354.50",5418.00
+ORD-0085,jane@email.com,desk lamp,20260403,1,650.00,
+ORD-0170,bob.martin@email.com,webcam hd,20260429,3,"1,225.50","3,676.50"
+ORD-0005,krit.som@email.com,monitor 24 inch,20260317,4,4360.50,"17,442.00"
+ORD-0122,michael.t@email.com,wireless mouse,20260103,5,427.50,
+ORD-0171,nok.kwan@email.com,usb-c hub,20260225,3,934.50,
+ORD-0111,linda.park@email.com,desk lamp,20260322,3,617.50,1852.50
+ORD-0052,krit.som@email.com,webcam hd,20260409,3,1290.00,3870.00
+ORD-0090,john@email.com,wireless mouse,20260426,3,450.00,"฿1,350.00"
+ORD-0118,krit.som@email.com,mechanical keyboard,20260209,3,1431.00,4293.00
+ORD-0173,kanya.pool@email.com,wireless mouse,20260219,5,405.00,
+ORD-0098,john@email.com,monitor 24 inch,20260115,2,4819.50,
+ORD-0100,alice.w@email.com,headphone stand,20260429,3,494.00,
+ORD-0123,narin.dee@email.com,webcam hd,20260113,5,1290.00,6450.00
+ORD-0039,alice.w@email.com,monitor 24 inch,20260122,4,4131.00,
+ORD-0054,alice.w@email.com,mechanical keyboard,20260430,4,"1,590.00","฿6,360.00"
+ORD-0094,narin.dee@email.com,mechanical keyboard,20260222,5,1590.00,
+ORD-0110,emma.brown@email.com,gel pen set,20260410,2,85.50,
+ORD-0116,nok.kwan@email.com,mechanical keyboard,20260304,1,1431.00,"1,431.00"
+ORD-0154,emma.brown@email.com,monitor 24 inch,20260117,2,"4,360.50",
+ORD-0092,thanawat.m@email.com,laptop stand,20260109,3,829.50,2488.50
+ORD-0033,alice.w@email.com,monitor 24 inch,20260113,4,4819.50,
+ORD-0041,daniel.lee@email.com,wireless mouse,20260113,2,450.00,900.00
+ORD-0133,michael.t@email.com,portable ssd 1tb,20260115,3,2890.00,"8,670.00"
+ORD-0145,daniel.lee@email.com,webcam hd,20260311,5,1161.00,5805.00
+ORD-0165,kanya.pool@email.com,mechanical keyboard,20260414,5,1590.00,"7,950.00"
+ORD-0113,ploy.kaew@email.com,ergonomic chair,20260408,3,5661.00,16983.00
+ORD-0064,kanya.pool@email.com,portable ssd 1tb,20260213,3,2601.00,"7,803.00"
+ORD-0040,mali.chan@email.com,webcam hd,20260203,3,1354.50,"฿4,063.50"
+ORD-0073,ploy.kaew@email.com,mechanical keyboard,20260117,3,1510.50,
+ORD-0139,michael.t@email.com,mechanical keyboard,20260124,2,"1,669.50","฿3,339.00"
+ORD-0018,thanawat.m@email.com,gel pen set,20260221,3,90.25,270.75
+ORD-0003,john@email.com,gel pen set,20260407,3,95.00,285.00
+ORD-0093,peter.kim@email.com,webcam hd,20260404,1,"1,290.00",
+ORD-0062,ploy.kaew@email.com,usb-c hub,20260428,3,845.50,"2,536.50"
+ORD-0025,krit.som@email.com,desk lamp,20260107,4,585.00,"฿2,340.00"
+ORD-0019,john@email.com,gel pen set,20260220,1,99.75,99.75
+ORD-0121,peter.kim@email.com,portable ssd 1tb,20260321,4,3034.50,"12,138.00"
+ORD-0179,john@email.com,portable ssd 1tb,20260406,3,3034.50,"฿9,103.50"
+ORD-0083,narin.dee@email.com,desk lamp,20260418,5,617.50,"3,087.50"
+ORD-0068,thanawat.m@email.com,portable ssd 1tb,20260317,4,"2,745.50","฿10,982.00"
+ORD-0126,daniel.lee@email.com,usb-c hub,20260306,4,845.50,"3,382.00"
