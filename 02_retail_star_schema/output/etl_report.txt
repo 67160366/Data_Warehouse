@@ -1,0 +1,244 @@
+
+==========================================================================
+  1) EXTRACT - อ่านข้อมูลดิบ
+==========================================================================
+ไฟล์  : retail_logs.csv
+ขนาด  : 325 แถว 11 คอลัมน์
+
+ตัวอย่าง 5 แถวแรก:
+     Sale_ID Store_Code           Branch  Province    Region  Product_Name    Category   Sale_Date Quantity Unit_Price Discount_Percent
+  SALE-00264     KKN-01 Khon Kaen Center Khon Kaen Northeast    Cookie Box      Bakery  2026-03-15        4     150.00               10
+  SALE-00077     PKT-01      Phuket Town   Phuket        NaN    TRAVEL MUG Merchandise 14-May-2026        4     320.00                5
+  SALE-00221     CBI-01         Bangsaen  Chonburi      East      Tote Bag Merchandise 06-May-2026        6     180.00               15
+  SALE-00150     PKT-01      Phuket Town    Phuket     South  caesar salad        Food 26-Mar-2026        2     110.00                0
+  SALE-00084     PKT-01      Phuket Town    PHUKET     South Mineral Water    Beverage 01-May-2026        6      25.00               10
+
+ค่าที่หาย:
+  Region             2 แถว
+  Discount_Percent   1 แถว
+
+แถวซ้ำสนิท        : 5
+Sale_ID ซ้ำ       : 5
+
+ค่าที่ต่างกันในแต่ละคอลัมน์ (ก่อนทำความสะอาด -> หลังตัดช่องว่างและตัวพิมพ์):
+  Store_Code       8 ->   8
+  Branch          31 ->   8  <-- ต้องรวมให้เหลือชุดเดียว
+  Province        18 ->   6  <-- ต้องรวมให้เหลือชุดเดียว
+  Region          14 ->   5  <-- ต้องรวมให้เหลือชุดเดียว
+  Product_Name    39 ->  10  <-- ต้องรวมให้เหลือชุดเดียว
+  Category        12 ->   4  <-- ต้องรวมให้เหลือชุดเดียว
+
+ฟอร์แมตของ Sale_Date:
+  %Y-%m-%d    100 แถว
+  %d/%m/%Y    111 แถว
+  %d-%b-%Y    114 แถว
+  แถวแบบ dd/mm/yyyy ที่เลขตัวหน้า > 12 : 74
+  -> ยืนยันว่าฟอร์แมตนี้เป็นวันขึ้นก่อน ไม่ใช่เดือนขึ้นก่อน
+
+==========================================================================
+  2) TRANSFORM - ทำความสะอาด
+==========================================================================
+ตัดช่องว่างหัวท้าย          : 153 ช่อง
+ลบแถวซ้ำสนิท              : 5 แถว (เหลือ 320)
+Sale_ID ไม่ซ้ำแล้ว          : ใช้เป็น primary key ของ fact ได้
+
+รวมการสะกดที่ต่างกันแค่ตัวพิมพ์:
+  Store_Code       8 ->   8 แบบ
+  Branch          24 ->   8 แบบ
+  Province        12 ->   6 แบบ
+  Region           9 ->   5 แบบ
+  Product_Name    29 ->  10 แบบ
+  Category         8 ->   4 แบบ
+
+เติม Region ที่หาย 2 แถว จาก Province (ตรวจแล้วเป็น 1:1)
+  mapping: {'Khon Kaen': 'Northeast', 'Chonburi': 'East', 'Phuket': 'South', 'Bangkok': 'Central', 'Chiang Mai': 'North', 'Rayong': 'East'}
+เติม Discount_Percent ที่หาย 1 แถว ด้วย 0: ['SALE-00144']
+
+แปลงวันที่ 3 ฟอร์แมตสำเร็จ  : 2026-03-01 ถึง 2026-06-30
+quantity          : 1 - 8
+unit_price        : 23.75 - 336.00
+discount_percent  : [0, 5, 10, 15]
+
+ไม่มีค่าว่างเหลือแล้วทุกคอลัมน์
+
+ตรวจความสอดคล้องก่อนแตกเป็น dimension:
+  Store_Code -> Branch           1:1 ผ่าน
+  Store_Code -> Province         1:1 ผ่าน
+  Store_Code -> Region           1:1 ผ่าน
+  Province -> Region             1:1 ผ่าน
+  Product_Name -> Category       1:1 ผ่าน
+
+==========================================================================
+  3) TRANSFORM - สร้าง dimension
+==========================================================================
+dim_location     8 แถว   (จาก Store_Code ที่ไม่ซ้ำ)
+dim_product     10 แถว   (จาก Product_Name ที่ไม่ซ้ำ)
+dim_date       122 แถว   (ปฏิทินต่อเนื่อง มีการขายจริง 113 วัน ว่าง 9 วัน)
+
+dim_location:
+   location_id store_code           branch   province    region
+             1     BKK-01   Central Rama 9    Bangkok   Central
+             2     BKK-02      Siam Square    Bangkok   Central
+             3     CBI-01         Bangsaen   Chonburi      East
+             4     CBI-02          Pattaya   Chonburi      East
+             5     CMI-01           Nimman Chiang Mai     North
+             6     KKN-01 Khon Kaen Center  Khon Kaen Northeast
+             7     PKT-01      Phuket Town     Phuket     South
+             8     RYG-01      Rayong City     Rayong      East
+
+dim_product:
+   product_id     product_name    category
+            1 Butter Croissant      Bakery
+            2     Caesar Salad        Food
+            3 Chicken Sandwich        Food
+            4   Chocolate Cake      Bakery
+            5       Cookie Box      Bakery
+            6    Mineral Water    Beverage
+            7   Premium Coffee    Beverage
+            8    Thai Milk Tea    Beverage
+            9         Tote Bag Merchandise
+           10       Travel Mug Merchandise
+
+dim_date (5 แถวแรก):
+   date_key  full_date  year  quarter  month month_name  day weekday_name  is_weekend
+   20260301 2026-03-01  2026        1      3      March    1       Sunday           1
+   20260302 2026-03-02  2026        1      3      March    2       Monday           0
+   20260303 2026-03-03  2026        1      3      March    3      Tuesday           0
+   20260304 2026-03-04  2026        1      3      March    4    Wednesday           0
+   20260305 2026-03-05  2026        1      3      March    5     Thursday           0
+
+==========================================================================
+  4) TRANSFORM - สร้าง fact_sales
+==========================================================================
+merge หา surrogate key ครบทุกแถว (320 แถว ไม่มี key หลุด)
+
+fact_sales    320 แถว   grain = 1 แถวต่อ 1 รายการขาย (Sale_ID)
+
+  ยอดก่อนลด (gross)    159,092.00 บาท
+  ส่วนลดรวม              7,251.43 บาท
+  ยอดสุทธิ (net)       151,840.57 บาท
+
+fact_sales (10 แถวแรก):
+     sale_id  location_id  product_id  date_key  quantity  unit_price  discount_percent  gross_amount  discount_amount  net_amount
+  SALE-00001            4           2  20260513         5      104.50                 0        522.50             0.00      522.50
+  SALE-00002            1           2  20260521         5      110.00                 0        550.00             0.00      550.00
+  SALE-00003            5           9  20260322         5      180.00                 0        900.00             0.00      900.00
+  SALE-00004            6           1  20260617         4       61.75                 5        247.00            12.35      234.65
+  SALE-00005            7           4  20260309         7      120.00                 0        840.00             0.00      840.00
+  SALE-00006            3          10  20260522         6      304.00                 0       1824.00             0.00     1824.00
+  SALE-00007            6           1  20260519         1       68.25                 0         68.25             0.00       68.25
+  SALE-00008            2          10  20260612         8      320.00                15       2560.00           384.00     2176.00
+  SALE-00009            3           3  20260518         2       95.00                 5        190.00             9.50      180.50
+  SALE-00010            3           8  20260606         8       70.00                 0        560.00             0.00      560.00
+
+==========================================================================
+  5) LOAD - เขียนลง SQLite
+==========================================================================
+ไฟล์   : retail_warehouse.db (เปิดไฟล์เดิม)
+SQLite : 3.45.1
+foreign_keys = 1
+
+สร้างตาราง (IF NOT EXISTS เพื่อให้รันซ้ำได้):
+  dim_location
+  dim_product
+  dim_date
+  fact_sales
+
+โหลดแบบ full refresh ครอบใน transaction เดียว
+  ลบ   fact ก่อน dimension  (ไม่งั้นแถวใน fact กลายเป็นเด็กกำพร้า)
+  โหลด dimension ก่อน fact  (ไม่งั้นไม่มี key ให้ชี้ไปหา)
+
+  DELETE FROM fact_sales      320 แถว
+  DELETE FROM dim_location      8 แถว
+  DELETE FROM dim_product      10 แถว
+  DELETE FROM dim_date        122 แถว
+
+  INSERT INTO dim_location      8 แถว
+  INSERT INTO dim_product      10 แถว
+  INSERT INTO dim_date        122 แถว
+  INSERT INTO fact_sales      320 แถว
+
+commit สำเร็จ
+
+==========================================================================
+  6) VERIFY - ตรวจสอบผลลัพธ์
+==========================================================================
+จำนวนแถว:
+  [ผ่าน] dim_location      8 แถว (เท่ากับที่เตรียมไว้ 8)
+  [ผ่าน] dim_product      10 แถว (เท่ากับที่เตรียมไว้ 10)
+  [ผ่าน] dim_date        122 แถว (เท่ากับที่เตรียมไว้ 122)
+  [ผ่าน] fact_sales      320 แถว (เท่ากับที่เตรียมไว้ 320)
+
+ความสมบูรณ์ของการอ้างอิง:
+  [ผ่าน] fact_sales -> dim_location   ไม่มีแถวกำพร้า (0 แถว)
+  [ผ่าน] fact_sales -> dim_product    ไม่มีแถวกำพร้า (0 แถว)
+  [ผ่าน] fact_sales -> dim_date       ไม่มีแถวกำพร้า (0 แถว)
+  [ผ่าน] PRAGMA foreign_key_check ไม่พบการละเมิด (0 รายการ)
+
+ยอดเงิน (คำนวณใหม่จาก CSV ดิบด้วยโค้ดคนละชุด แล้วเทียบกับในคลัง):
+  [ผ่าน] SUM(gross_amount   ) =   159,092.00  (จาก CSV ดิบ   159,092.00)
+  [ผ่าน] SUM(discount_amount) =     7,251.43  (จาก CSV ดิบ     7,251.43)
+  [ผ่าน] SUM(net_amount     ) =   151,840.57  (จาก CSV ดิบ   151,840.57)
+
+ฐานข้อมูลปฏิเสธข้อมูลเสียจริงหรือไม่ (ยิงของเสียเข้าไปแล้ว rollback):
+  [ผ่าน] ปฏิเสธ FK ปลอม (location_id = 999)
+  [ผ่าน] ปฏิเสธ sale_id ซ้ำ
+  [ผ่าน] ปฏิเสธ quantity = 0 (ผิด CHECK)
+
+สรุป: ผ่าน 14/14 ข้อ
+
+==========================================================================
+  7) ตัวอย่างคำถามธุรกิจที่คลังนี้ตอบได้
+==========================================================================
+
+--- ยอดขายรายภูมิภาค ---
+     region  orders  units  revenue
+       East     125    479 54072.43
+    Central      79    367 41542.44
+      South      47    224 25556.22
+      North      35    168 18784.45
+  Northeast      34    113 11885.03
+
+--- ยอดขายรายสาขา ---
+  store_code           branch   province  orders  revenue  avg_order
+      PKT-01      Phuket Town     Phuket      47 25556.22     543.75
+      BKK-02      Siam Square    Bangkok      41 21397.79     521.90
+      BKK-01   Central Rama 9    Bangkok      38 20144.65     530.12
+      CBI-02          Pattaya   Chonburi      42 19142.05     455.76
+      CMI-01           Nimman Chiang Mai      35 18784.45     536.70
+      CBI-01         Bangsaen   Chonburi      42 18398.10     438.05
+      RYG-01      Rayong City     Rayong      41 16532.28     403.23
+      KKN-01 Khon Kaen Center  Khon Kaen      34 11885.03     349.56
+
+--- สินค้าขายดี ---
+      product_name    category  units  revenue
+        Travel Mug Merchandise    122 38133.60
+      Caesar Salad        Food    190 20173.44
+    Chocolate Cake      Bakery    151 17286.60
+          Tote Bag Merchandise     94 16418.25
+  Chicken Sandwich        Food    182 16306.28
+        Cookie Box      Bakery    103 14607.01
+     Thai Milk Tea    Beverage    151 10402.17
+  Butter Croissant      Bakery    137  8323.09
+    Premium Coffee    Beverage     87  7047.57
+     Mineral Water    Beverage    134  3142.56
+
+--- แนวโน้มรายเดือน (รวมวันที่ขายไม่ออก) ---
+  month_name  days_in_month  days_with_sales  orders  revenue
+       March             31               29      76 32539.14
+       April             30               29      94 52026.15
+         May             31               30      80 35097.38
+        June             30               25      70 32177.90
+
+--- ผลกระทบของส่วนลดต่อหมวดสินค้า ---
+     category    gross  discount      net  discount_pct
+  Merchandise 56720.00   2168.15 54551.85          3.82
+       Bakery 42420.75   2204.05 40216.70          5.20
+         Food 38323.50   1843.78 36479.72          4.81
+     Beverage 21627.75   1035.45 20592.30          4.79
+
+==========================================================================
+  เสร็จสิ้น
+==========================================================================
+คลังข้อมูล : D:\งาน\data_ware\Week04-Assignemnt\retail_warehouse.db
+ไฟล์กลาง   : D:\งาน\data_ware\Week04-Assignemnt\output
