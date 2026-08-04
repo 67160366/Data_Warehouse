@@ -8,6 +8,7 @@
 03_data_quality_cleaning/
 ├── dq_lab.ipynb          งานส่ง — 1 ส่วนต่อ Task พร้อม output, boxplot และคำตอบวิเคราะห์
 ├── dq_lab.py             pipeline ตัวจริง รันซ้ำได้ มี assertion 15 ข้อ
+├── answers.docx          รายงานคำตอบคำถาม 5 ข้อ + Reflection + Checklist (Word ตัวอักษรดำ พื้นขาว)
 ├── data/
 │   ├── e_commerce_raw.csv          ข้อมูลดิบ 630 แถว 16 คอลัมน์
 │   ├── customer_reference.csv      ตารางอ้างอิงลูกค้า 167 ราย
@@ -16,9 +17,7 @@
 ├── figures/
 │   ├── boxplot_before.png
 │   └── boxplot_after.png
-└── docs/
-    ├── Lab-assigment.pdf
-    └── answers.html            เอกสารคำตอบคำถาม 5 ข้อ + Reflection + Checklist (เปิดในเบราว์เซอร์/สั่งพิมพ์เป็น PDF ได้)
+└── docs/Lab-assigment.pdf
 ```
 
 ## วิธีรัน
