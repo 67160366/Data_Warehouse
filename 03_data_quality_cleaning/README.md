@@ -16,7 +16,9 @@
 ├── figures/
 │   ├── boxplot_before.png
 │   └── boxplot_after.png
-└── docs/Lab-assigment.pdf
+└── docs/
+    ├── Lab-assigment.pdf
+    └── answers.html            เอกสารคำตอบคำถาม 5 ข้อ + Reflection + Checklist (เปิดในเบราว์เซอร์/สั่งพิมพ์เป็น PDF ได้)
 ```
 
 ## วิธีรัน
