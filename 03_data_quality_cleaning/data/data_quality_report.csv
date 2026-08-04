@@ -1,0 +1,20 @@
+﻿Dimension,Metric,Before,After,Change
+Overall,จำนวนแถวทั้งหมด,630.0,612.0,-18.0
+Completeness,Customer_Email ว่าง,50.0,0.0,-50.0
+Completeness,Province ว่าง,12.0,0.0,-12.0
+Uniqueness,แถวซ้ำทั้งแถว (exact duplicate),18.0,0.0,-18.0
+Uniqueness,Transaction_ID ซ้ำ,18.0,0.0,-18.0
+Consistency,จำนวนรูปแบบของ Gender,10.0,2.0,-8.0
+Consistency,จำนวนรูปแบบของ Payment_Method,14.0,4.0,-10.0
+Consistency,จำนวนรูปแบบของ Order_Status,7.0,5.0,-2.0
+Consistency,Order_Date ที่ไม่อยู่ในรูป YYYY-MM-DD,281.0,0.0,-281.0
+Validity,Quantity นอกช่วง 1-20,3.0,0.0,-3.0
+Validity,Order_Status ที่ยังไม่อยู่ใน 4 ค่ามาตรฐาน,16.0,5.0,-11.0
+Validity,Transaction_Amount ติดลบ (ติด flag ไว้ ไม่แก้ค่า),2.0,2.0,0.0
+Validity,Transaction_Amount ที่เป็นค่า sentinel,4.0,0.0,-4.0
+Accuracy,ยอดไม่ตรงสูตรเกิน 1 บาท (ไม่แก้ค่า รอ business ตรวจ),49.0,49.0,0.0
+Accuracy,Outlier ตาม IQR (นับรวมโปรโมชัน),25.0,6.0,-19.0
+Timeliness,แถวที่วัด Load_Delay_Hours ไม่ได้เพราะวันที่เสีย,281.0,0.0,-281.0
+Timeliness,แถวที่ล่าช้ากว่า 24 ชม. (before วัดได้เฉพาะ 349 แถว),24.0,38.0,14.0
+Overall,ยอดขายรวม (บาท),3838144.59,489798.42,-3348346.17
+Overall,ยอดขายรวมเมื่อตัดค่า sentinel 4 แถวออก (บาท),504814.59,489798.42,-15016.170000000042
