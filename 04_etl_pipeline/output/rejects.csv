@@ -1,0 +1,12 @@
+reject_stage,reject_reason,customer_id,name,province,email,product_id,product_name,category,price,order_id,order_date,qty,unit_price,discount_pct,status
+customers,duplicate_customer_id,C004,Fah Sukjai,ชลบุรี,user4@example.com,,,,,,,,,,
+customers,duplicate_customer_id,C009,Game Sukjai,Rayong,user9@example.com,,,,,,,,,,
+orders,duplicate_order_id,C036,,,,P010,,,,O0011,03-Aug-2026,3.0,1072.6,5.0,PAID
+orders,duplicate_order_id,C044,,,,P014,,,,O0041,2026-08-01,2.0,586.17,10.0,paid
+orders,duplicate_order_id,C006,,,,P006,,,,O0101,2026/08/02,1.0,1322.8,0.0,completed
+orders,qty_not_positive,C046,,,,P001,,,,O0007,2026-08-04,-2.0,996.79,0.0,PAID
+orders,discount_pct_out_of_range,C014,,,,P005,,,,O0021,2026-08-04,2.0,1299.0,150.0,cancelled
+orders,invalid_order_date,C041,,,,P004,,,,O0034,not-a-date,2.0,390.89,0.0,PAID
+orders,unknown_customer_id,C999,,,,P002,,,,O0049,2026-08-04,4.0,757.5,0.0,cancelled
+orders,unknown_product_id,C047,,,,P999,,,,O0076,03-Aug-2026,2.0,503.9,0.0,cancelled
+orders,unit_price_not_positive,C019,,,,P015,,,,O0091,01/08/2026,2.0,-100.0,5.0,completed

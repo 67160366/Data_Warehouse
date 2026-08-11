@@ -1,0 +1,78 @@
+2026-08-11 17:29:20,397 | INFO | ETL started
+2026-08-11 17:29:20,413 | INFO | extract | customers | shape=(62, 4) | columns=['customer_id', 'name', 'province', 'email']
+2026-08-11 17:29:20,413 | INFO | extract | orders | shape=(183, 8) | columns=['order_id', 'customer_id', 'product_id', 'order_date', 'qty', 'unit_price', 'discount_pct', 'status']
+2026-08-11 17:29:20,413 | INFO | extract | products | shape=(15, 4) | columns=['product_id', 'product_name', 'category.name', 'pricing.price']
+2026-08-11 17:29:20,413 | INFO | extract | stores | shape=(3, 3) | columns=['store_id', 'store_name', 'province']
+2026-08-11 17:29:20,413 | INFO | transform | customers | kept=60 dropped_duplicates=2 provinces=['Bangkok', 'Chanthaburi', 'Chonburi', 'Rayong', 'Unknown']
+2026-08-11 17:29:20,413 | INFO | transform | products | kept=15 dropped_duplicates=0 price_unparsed=0
+2026-08-11 17:29:20,413 | INFO | transform | rule=qty_not_positive failed=1
+2026-08-11 17:29:20,413 | INFO | transform | rule=unit_price_not_positive failed=1
+2026-08-11 17:29:20,413 | INFO | transform | rule=discount_pct_out_of_range failed=1
+2026-08-11 17:29:20,413 | INFO | transform | rule=invalid_order_date failed=1
+2026-08-11 17:29:20,428 | INFO | transform | rule=unknown_customer_id failed=1
+2026-08-11 17:29:20,428 | INFO | transform | rule=unknown_product_id failed=1
+2026-08-11 17:29:20,428 | INFO | transform | orders | kept=174 dropped_duplicates=3 rule_rejects=6
+2026-08-11 17:29:20,428 | INFO | transform | status filter | kept=100 filtered_out=74 ({'pending': 44, 'cancelled': 30})
+2026-08-11 17:29:20,428 | INFO | transform | done | sales_rows=100 total_sales=192074.63 rejects=11
+2026-08-11 17:29:20,428 | INFO | transform | rejects by reason | {'duplicate_order_id': 3, 'duplicate_customer_id': 2, 'qty_not_positive': 1, 'discount_pct_out_of_range': 1, 'invalid_order_date': 1, 'unknown_customer_id': 1, 'unknown_product_id': 1, 'unit_price_not_positive': 1}
+2026-08-11 17:29:20,471 | INFO | load | dim_customer | upserted=60 table_rows=60
+2026-08-11 17:29:20,474 | INFO | load | dim_product | upserted=15 table_rows=15
+2026-08-11 17:29:20,475 | INFO | load | fact_sales | upserted=100 table_rows=100
+2026-08-11 17:29:20,475 | INFO | load | done | {'dim_customer': 60, 'dim_product': 15, 'fact_sales': 100}
+2026-08-11 17:29:20,475 | INFO | validate | row_count_match | PASS
+2026-08-11 17:29:20,475 | INFO | validate | no_duplicate_order_id | PASS
+2026-08-11 17:29:20,475 | INFO | validate | total_sales_match | PASS
+2026-08-11 17:29:20,475 | INFO | validate | done | status=PASS
+2026-08-11 17:29:20,475 | INFO | ETL completed
+2026-08-11 17:29:47,458 | INFO | ETL started
+2026-08-11 17:29:47,465 | INFO | extract | customers | shape=(62, 4) | columns=['customer_id', 'name', 'province', 'email']
+2026-08-11 17:29:47,467 | INFO | extract | orders | shape=(183, 8) | columns=['order_id', 'customer_id', 'product_id', 'order_date', 'qty', 'unit_price', 'discount_pct', 'status']
+2026-08-11 17:29:47,467 | INFO | extract | products | shape=(15, 4) | columns=['product_id', 'product_name', 'category.name', 'pricing.price']
+2026-08-11 17:29:47,467 | INFO | extract | stores | shape=(3, 3) | columns=['store_id', 'store_name', 'province']
+2026-08-11 17:29:47,467 | INFO | transform | customers | kept=60 dropped_duplicates=2 provinces=['Bangkok', 'Chanthaburi', 'Chonburi', 'Rayong', 'Unknown']
+2026-08-11 17:29:47,467 | INFO | transform | products | kept=15 dropped_duplicates=0 price_unparsed=0
+2026-08-11 17:29:47,475 | INFO | transform | rule=qty_not_positive failed=1
+2026-08-11 17:29:47,475 | INFO | transform | rule=unit_price_not_positive failed=1
+2026-08-11 17:29:47,475 | INFO | transform | rule=discount_pct_out_of_range failed=1
+2026-08-11 17:29:47,475 | INFO | transform | rule=invalid_order_date failed=1
+2026-08-11 17:29:47,475 | INFO | transform | rule=unknown_customer_id failed=1
+2026-08-11 17:29:47,475 | INFO | transform | rule=unknown_product_id failed=1
+2026-08-11 17:29:47,475 | INFO | transform | orders | kept=174 dropped_duplicates=3 rule_rejects=6
+2026-08-11 17:29:47,475 | INFO | transform | status filter | kept=100 filtered_out=74 ({'pending': 44, 'cancelled': 30})
+2026-08-11 17:29:47,475 | INFO | transform | done | sales_rows=100 total_sales=192074.63 rejects=11
+2026-08-11 17:29:47,489 | INFO | transform | rejects by reason | {'duplicate_order_id': 3, 'duplicate_customer_id': 2, 'qty_not_positive': 1, 'discount_pct_out_of_range': 1, 'invalid_order_date': 1, 'unknown_customer_id': 1, 'unknown_product_id': 1, 'unit_price_not_positive': 1}
+2026-08-11 17:29:47,489 | INFO | load | dim_customer | upserted=60 table_rows=60
+2026-08-11 17:29:47,489 | INFO | load | dim_product | upserted=15 table_rows=15
+2026-08-11 17:29:47,489 | INFO | load | fact_sales | upserted=100 table_rows=100
+2026-08-11 17:29:47,489 | INFO | load | done | {'dim_customer': 60, 'dim_product': 15, 'fact_sales': 100}
+2026-08-11 17:29:47,489 | INFO | validate | row_count_match | PASS
+2026-08-11 17:29:47,489 | INFO | validate | no_duplicate_order_id | PASS
+2026-08-11 17:29:47,489 | INFO | validate | total_sales_match | PASS
+2026-08-11 17:29:47,489 | INFO | validate | done | status=PASS
+2026-08-11 17:29:47,489 | INFO | ETL completed
+2026-08-11 17:29:48,023 | INFO | ETL started
+2026-08-11 17:29:48,040 | INFO | extract | customers | shape=(62, 4) | columns=['customer_id', 'name', 'province', 'email']
+2026-08-11 17:29:48,040 | INFO | extract | orders | shape=(183, 8) | columns=['order_id', 'customer_id', 'product_id', 'order_date', 'qty', 'unit_price', 'discount_pct', 'status']
+2026-08-11 17:29:48,040 | INFO | extract | products | shape=(15, 4) | columns=['product_id', 'product_name', 'category.name', 'pricing.price']
+2026-08-11 17:29:48,040 | INFO | extract | stores | shape=(3, 3) | columns=['store_id', 'store_name', 'province']
+2026-08-11 17:29:48,040 | INFO | transform | customers | kept=60 dropped_duplicates=2 provinces=['Bangkok', 'Chanthaburi', 'Chonburi', 'Rayong', 'Unknown']
+2026-08-11 17:29:48,040 | INFO | transform | products | kept=15 dropped_duplicates=0 price_unparsed=0
+2026-08-11 17:29:48,040 | INFO | transform | rule=qty_not_positive failed=1
+2026-08-11 17:29:48,040 | INFO | transform | rule=unit_price_not_positive failed=1
+2026-08-11 17:29:48,040 | INFO | transform | rule=discount_pct_out_of_range failed=1
+2026-08-11 17:29:48,040 | INFO | transform | rule=invalid_order_date failed=1
+2026-08-11 17:29:48,040 | INFO | transform | rule=unknown_customer_id failed=1
+2026-08-11 17:29:48,040 | INFO | transform | rule=unknown_product_id failed=1
+2026-08-11 17:29:48,054 | INFO | transform | orders | kept=174 dropped_duplicates=3 rule_rejects=6
+2026-08-11 17:29:48,057 | INFO | transform | status filter | kept=100 filtered_out=74 ({'pending': 44, 'cancelled': 30})
+2026-08-11 17:29:48,061 | INFO | transform | done | sales_rows=100 total_sales=192074.63 rejects=11
+2026-08-11 17:29:48,063 | INFO | transform | rejects by reason | {'duplicate_order_id': 3, 'duplicate_customer_id': 2, 'qty_not_positive': 1, 'discount_pct_out_of_range': 1, 'invalid_order_date': 1, 'unknown_customer_id': 1, 'unknown_product_id': 1, 'unit_price_not_positive': 1}
+2026-08-11 17:29:48,067 | INFO | load | dim_customer | upserted=60 table_rows=60
+2026-08-11 17:29:48,069 | INFO | load | dim_product | upserted=15 table_rows=15
+2026-08-11 17:29:48,069 | INFO | load | fact_sales | upserted=100 table_rows=100
+2026-08-11 17:29:48,069 | INFO | load | done | {'dim_customer': 60, 'dim_product': 15, 'fact_sales': 100}
+2026-08-11 17:29:48,069 | INFO | validate | row_count_match | PASS
+2026-08-11 17:29:48,069 | INFO | validate | no_duplicate_order_id | PASS
+2026-08-11 17:29:48,069 | INFO | validate | total_sales_match | PASS
+2026-08-11 17:29:48,069 | INFO | validate | done | status=PASS
+2026-08-11 17:29:48,069 | INFO | ETL completed
