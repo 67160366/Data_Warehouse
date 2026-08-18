@@ -1,0 +1,5 @@
+﻿run_id,batch,started_at,ended_at,rows_read,rows_valid,rows_rejected,rows_duplicate,rows_loaded,rows_updated,rows_skipped_stale,rows_repaired,status,message
+1,orders_batch_1,2026-08-18T21:33:35,2026-08-18T21:33:35,420,389,31,0,389,0,0,9,SUCCESS,
+2,orders_batch_1,2026-08-18T21:33:36,2026-08-18T21:33:36,420,389,31,0,0,0,389,9,SUCCESS,
+3,orders_batch_2,2026-08-18T21:33:38,2026-08-18T21:33:38,424,387,37,1,385,1,0,10,SUCCESS,
+4,orders_batch_3,2026-08-18T21:33:39,2026-08-18T21:33:40,424,389,35,3,385,0,1,10,SUCCESS,

@@ -13,3 +13,10 @@ env/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# บันทึกภายใน ไม่ต้องขึ้น repo
+05_incremental_pipeline/DECISIONS.md
+05_incremental_pipeline/make_answers_docx.py
+05_incremental_pipeline/logs/
+05_incremental_pipeline/output/kpi_summary.json
+05_incremental_pipeline/docs/
