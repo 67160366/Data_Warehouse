@@ -20,3 +20,5 @@ desktop.ini
 05_incremental_pipeline/logs/
 05_incremental_pipeline/output/kpi_summary.json
 05_incremental_pipeline/docs/
+06_data_integration/make_answers_docx.py
+06_data_integration/make_notebook.py

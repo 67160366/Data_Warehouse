@@ -1,0 +1,38 @@
+﻿step,check,metric,rows_before,rows_after,rows_affected,action,note
+5.1 profile,raw_profile,สำรวจไฟล์ orders_2026_01.csv,361,361,1,อ่านอย่างเดียว ยังไม่แก้ไข,8 คอลัมน์ | ค่าว่างรวม 1 | แถวซ้ำทั้งแถว 1 | คีย์ซ้ำ 1
+5.1 profile,raw_profile,สำรวจไฟล์ orders_2026_02.csv,391,391,1,อ่านอย่างเดียว ยังไม่แก้ไข,8 คอลัมน์ | ค่าว่างรวม 1 | แถวซ้ำทั้งแถว 1 | คีย์ซ้ำ 1
+5.1 profile,raw_profile,สำรวจไฟล์ customers_crm.csv,163,163,3,อ่านอย่างเดียว ยังไม่แก้ไข,5 คอลัมน์ | ค่าว่างรวม 5 | แถวซ้ำทั้งแถว 0 | คีย์ซ้ำ 3
+5.1 profile,raw_profile,สำรวจไฟล์ product_master.xlsx,40,40,0,อ่านอย่างเดียว ยังไม่แก้ไข,5 คอลัมน์ | ค่าว่างรวม 0 | แถวซ้ำทั้งแถว 0 | คีย์ซ้ำ 0
+5.1 profile,raw_profile,สำรวจไฟล์ payments.json,752,752,1,อ่านอย่างเดียว ยังไม่แก้ไข,5 คอลัมน์ | ค่าว่างรวม 0 | แถวซ้ำทั้งแถว 1 | คีย์ซ้ำ 1
+5.2 combine,schema_alignment,คอลัมน์ที่ rename ของเดือน ก.พ.,8,9,3,rename + แปลง discount จาก % เป็นสัดส่วน + parse วันที่ dd/mm/yyyy,"ordered_at->order_date, qty->quantity, discount_pct->discount"
+5.2 combine,concat_orders,จำนวนแถวหลังรวมสองเดือน,752,752,0,pd.concat(ignore_index=True),ม.ค. 361 แถว + ก.พ. 391 แถว
+5.3 transform,dtype_cast_orders,แปลงชนิดข้อมูล quantity/unit_price/discount/order_date,752,752,0,astype Int64 / float / datetime64,ค่าที่แปลงไม่ได้กลายเป็น NA แล้วถูกคัดออกในขั้น 5.5
+5.3 transform,duplicate_order_id,order_id ซ้ำ,752,750,2,"drop_duplicates(subset='order_id', keep='last')",กติกาข้อ 4.1 เก็บข้อมูลล่าสุดตามลำดับที่ปรากฏ
+5.3 transform,email_standardization,email ที่มีช่องว่าง/ตัวพิมพ์ใหญ่,163,163,9,str.strip().str.lower(),ตัวอย่างก่อนแก้: ' CUSTOMER017@EXAMPLE.COM '
+5.3 transform,email_missing,email ว่าง,163,163,5,คงไว้,email ไม่ใช่คีย์ทางธุรกิจ จึงไม่ตัดแถวทิ้ง แต่บันทึกไว้
+5.3 transform,province_standardization,จังหวัดที่เขียนไม่ตรงมาตรฐาน,14,6,66,normalize + map ตาม PROVINCE_MAP,"14 รูปแบบในไฟล์ต้นทาง -> 12 รูปแบบหลัง normalize (ตัดช่องว่างและแก้ เ+เ) -> 6 จังหวัดมาตรฐาน รวมชื่ออังกฤษ, 'กทม.', ช่องว่างท้ายชื่อ และ 'ขอนเเก่น' ที่สะกดด้วย เ+เ"
+5.3 transform,province_unmapped,จังหวัดที่ map ไม่ได้ (= 'ไม่ระบุ'),163,163,0,ตั้งเป็น 'ไม่ระบุ',ไม่เดาชื่อจังหวัดเอง
+5.3 transform,duplicate_customer_id,customer_id ซ้ำใน CRM,163,160,3,"drop_duplicates(subset='customer_id', keep='last')",ต้องทำก่อน merge มิฉะนั้น validate='m:1' จะโยน MergeError
+5.3 transform,duplicate_product_id,product_id ซ้ำใน master,40,40,0,"drop_duplicates(subset='product_id', keep='last')",ชุดนี้ไม่พบซ้ำ แต่คงขั้นตอนไว้เพื่อกันข้อมูลรอบหน้า
+5.3 transform,inactive_product,สินค้าที่ active_flag = 'N',40,40,3,คงไว้ใน dim_product,สินค้าเลิกขายแล้วแต่ยังมีคำสั่งซื้อย้อนหลัง จึงไม่ตัดออกจาก dimension
+5.3 transform,duplicate_payment_id,payment_id ซ้ำ,752,751,1,"drop_duplicates(subset='payment_id', keep='last')",
+5.3 transform,multiple_payment_per_order,order_id ที่มีเหตุการณ์ชำระเงินมากกว่าหนึ่งครั้ง,751,751,0,"drop_duplicates(subset='order_id', keep='last')",เก็บสถานะล่าสุดตามลำดับที่ปรากฏ เพื่อให้ merge เป็น 1:1
+5.3 transform,payment_status_mix,สัดส่วนสถานะการชำระเงิน,751,751,64,ยังไม่ตัดออก รอกรองในขั้น 5.5,FAILED=46 | PAID=687 | REFUNDED=18
+5.4 integrate,merge_customer,จับคู่ customer_id กับ master ได้/ไม่ได้,750,728,22,"pd.merge(how='left', validate=..., indicator='_merge_customer')","matched=728, unmatched=22, คีย์ที่ไม่พบ 5 ค่า"
+5.4 integrate,merge_product,จับคู่ product_id กับ master ได้/ไม่ได้,750,748,2,"pd.merge(how='left', validate=..., indicator='_merge_product')","matched=748, unmatched=2, คีย์ที่ไม่พบ 1 ค่า"
+5.4 integrate,merge_payment,จับคู่ order_id กับ master ได้/ไม่ได้,750,750,0,"pd.merge(how='left', validate=..., indicator='_merge_payment')","matched=750, unmatched=0, คีย์ที่ไม่พบ 0 ค่า"
+5.4 integrate,price_vs_standard_price,คำสั่งซื้อที่ unit_price ไม่เท่ากับราคาอ้างอิงใน master,750,750,450,บันทึกอย่างเดียว ไม่แก้ไข,ยอดขายใช้ unit_price ที่ขายจริงตามกติกาข้อ 4.5
+5.5 validate,invalid_order_date,order_date แปลงเป็นวันที่ไม่ได้,750,750,0,คัดออกจาก fact และบันทึกใน rejected_rows.csv,order_date ต้องเป็นวันที่ที่ถูกต้อง
+5.5 validate,missing_quantity,quantity ว่าง,750,750,0,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.2 quantity > 0
+5.5 validate,missing_unit_price,unit_price ว่าง,750,748,2,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.2 unit_price > 0
+5.5 validate,qty_not_positive,quantity <= 0,748,746,2,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.2 quantity > 0
+5.5 validate,price_not_positive,unit_price <= 0,746,746,0,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.2 unit_price > 0
+5.5 validate,discount_out_of_range,discount อยู่นอกช่วง 0-1 หรือว่าง,746,746,0,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.2 0 <= discount <= 1
+5.5 validate,customer_not_in_master,customer_id ไม่พบใน CRM,746,724,22,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.3 ลูกค้าต้องพบใน Master Data
+5.5 validate,product_not_in_master,product_id ไม่พบใน product master,724,722,2,คัดออกจาก fact และบันทึกใน rejected_rows.csv,กติกาข้อ 4.3 สินค้าต้องพบใน Master Data
+5.5 validate,payment_missing,ไม่มีเหตุการณ์ชำระเงินของ order นี้,722,722,0,คัดออกจาก fact,กติกาข้อ 4.4 นับเป็นยอดขายเมื่อ payment.status = PAID
+5.5 validate,payment_not_paid,สถานะการชำระเงินไม่ใช่ PAID,722,660,62,คัดออกจาก fact,FAILED=44 | REFUNDED=18
+5.5 load,fact_sales,แถวใน fact_sales,752,660,92,net_sales = quantity x unit_price x (1 - discount),"ยอดขายสุทธิรวม 10,224,044.09 บาท"
+5.5 load,dim_customer,แถวใน dim_customer,163,160,3,surrogate key customer_key,
+5.5 load,dim_product,แถวใน dim_product,40,40,0,surrogate key product_key,
+Challenge,validate_data,ตรวจ uniqueness / referential integrity / ค่านอกช่วง,660,660,0,ผ่านทุกข้อ,ถ้าไม่ผ่าน ฟังก์ชันจะ raise DataValidationError และ pipeline หยุดทันที

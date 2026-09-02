@@ -1,0 +1,128 @@
+{
+  "raw_rows": 752,
+  "rows_after_dedup": 750,
+  "funnel": {
+    "ข้อมูลดิบ 2 เดือน (raw)": 752,
+    "หลังลบ order_id ซ้ำ": 750,
+    "ค่าถูกต้องตามกติกา": 746,
+    "จับคู่ master ได้": 722,
+    "ชำระเงินสำเร็จ (fact)": 660
+  },
+  "before_after": [
+    {
+      "metric": "order_id ซ้ำ",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metric": "unit_price ว่าง",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metric": "quantity <= 0",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metric": "customer_id ซ้ำใน CRM",
+      "before": 3,
+      "after": 0
+    },
+    {
+      "metric": "email ไม่เป็นมาตรฐาน",
+      "before": 9,
+      "after": 0
+    },
+    {
+      "metric": "จังหวัดไม่เป็นมาตรฐาน",
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metric": "อ้าง master ไม่ได้",
+      "before": 24,
+      "after": 0
+    },
+    {
+      "metric": "ชำระเงินไม่สำเร็จ/ไม่มี",
+      "before": 62,
+      "after": 0
+    }
+  ],
+  "reject_counts": {
+    "PAYMENT_NOT_PAID": 62,
+    "CUSTOMER_NOT_IN_MASTER": 22,
+    "MISSING_UNIT_PRICE": 2,
+    "DUPLICATE_ORDER_ID": 2,
+    "QTY_NOT_POSITIVE": 2,
+    "PRODUCT_NOT_IN_MASTER": 2
+  },
+  "fact_rows": 660,
+  "net_sales_total": 10224044.09,
+  "gross_sales_total": 10482055.7,
+  "unmatched_customer_rows": 22,
+  "unmatched_product_rows": 2,
+  "province_before_variants": 14,
+  "province_normalized_variants": 12,
+  "province_after": [
+    "กรุงเทพมหานคร",
+    "ขอนแก่น",
+    "ชลบุรี",
+    "ภูเก็ต",
+    "ระยอง",
+    "เชียงใหม่"
+  ],
+  "dim_customer_rows": 160,
+  "dim_product_rows": 40,
+  "raw_profiles": {
+    "orders_2026_01.csv": {
+      "name": "orders_2026_01.csv",
+      "rows": 361,
+      "columns": 8,
+      "missing_total": 1,
+      "duplicate_rows": 1,
+      "duplicate_key": 1
+    },
+    "orders_2026_02.csv": {
+      "name": "orders_2026_02.csv",
+      "rows": 391,
+      "columns": 8,
+      "missing_total": 1,
+      "duplicate_rows": 1,
+      "duplicate_key": 1
+    },
+    "customers_crm.csv": {
+      "name": "customers_crm.csv",
+      "rows": 163,
+      "columns": 5,
+      "missing_total": 5,
+      "duplicate_rows": 0,
+      "duplicate_key": 3
+    },
+    "product_master.xlsx": {
+      "name": "product_master.xlsx",
+      "rows": 40,
+      "columns": 5,
+      "missing_total": 0,
+      "duplicate_rows": 0,
+      "duplicate_key": 0
+    },
+    "payments.json": {
+      "name": "payments.json",
+      "rows": 752,
+      "columns": 5,
+      "missing_total": 0,
+      "duplicate_rows": 1,
+      "duplicate_key": 1
+    }
+  },
+  "answers": {
+    "q1": "หลัง concat ได้ 752 แถว และเหลือ 750 แถวหลังลบ order_id ซ้ำ (ลบไป 2 แถว ตามกติกา keep='last')",
+    "q2": "customer_id ที่ไม่พบใน CRM มี 22 แถว และ product_id ที่ไม่พบใน product master มี 2 แถว (นับจาก indicator ของ merge บนข้อมูลที่ลบซ้ำแล้ว)",
+    "q3": "ยอดขายที่ใช้ได้จริง 660 ธุรกรรม ยอดขายสุทธิรวม 10,224,044.09 บาท",
+    "q4": "กรุงเทพมหานคร มียอดขายสุทธิสูงสุด 2,612,955.88 บาท (25.56% ของทั้งหมด จาก 154 ธุรกรรม)",
+    "q5": "หมวด Smartphone มียอดขายสุทธิสูงสุด 3,092,117.34 บาท (30.24% จาก 178 ธุรกรรม)",
+    "q6": "ถ้า merge ก่อน cleaning ผลจะเพี้ยนและเชื่อถือไม่ได้ — CRM มี customer_id ซ้ำ 3 รายการ ทำให้ pd.merge(validate='m:1') โยน MergeError ทันที และถ้าไม่ใส่ validate= แถวคำสั่งซื้อ จะถูกคูณซ้ำจนยอดขายเกินจริง; order_id ที่ยังซ้ำอยู่จะถูกนับยอดสองครั้ง; discount ของเดือน ก.พ. ที่ยังเป็นสตริง '5%' จะคำนวณ net_sales ไม่ได้เลย; และชื่อจังหวัดที่ยังไม่ทำมาตรฐาน จะกระจายเป็นหลายกลุ่ม (Bangkok / กทม. / กรุงเทพมหานคร แยกกัน) ทำให้สรุปยอดรายจังหวัดผิด สรุปคือ cleaning ต้องมาก่อน merge เสมอ"
+  }
+}
