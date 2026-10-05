@@ -1,0 +1,14 @@
+seed: 42
+weeks: 26
+lots: 120
+lot_size_min: 200
+lot_size_max: 600
+inspectors: 10
+devices: 5
+defect_rate_mean: 0.03
+hot_lots: 4
+claim_noise: 0.08
+scenarios:
+  - {key: 1, name: Conservative, device_recall: 0.75, false_alarm: 0.06, uncertain_rate: 0.12}
+  - {key: 2, name: Base, device_recall: 0.85, false_alarm: 0.04, uncertain_rate: 0.08}
+  - {key: 3, name: Optimistic, device_recall: 0.92, false_alarm: 0.03, uncertain_rate: 0.06}
