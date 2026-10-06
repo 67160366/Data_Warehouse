@@ -5,7 +5,7 @@ import json
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECTORIES = ["config", "dashboard", "data", "docs", "src", "tests", "scripts", "reports"]
+DIRECTORIES = [".streamlit", "config", "dashboard", "data", "docs", "src", "tests", "scripts", "reports"]
 FILES = [".gitignore", "README.md", "PLAN_3Eyes_DW_Dashboard.md", "requirements.txt", "requirements-dev.txt", "run.py", "run.ps1", "run.sh"]
 
 

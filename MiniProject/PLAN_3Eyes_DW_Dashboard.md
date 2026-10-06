@@ -26,4 +26,4 @@
 
 เป้าหมาย `67160366/Data_Warehouse`, branch `main`, entrypoint `MiniProject/dashboard/app.py`, Python 3.11 บน Streamlit Community Cloud มี requirements ข้าง entrypoint อ้างอิงไฟล์หลักและ SQLite snapshot แนบ CSV; แอปอ่านอย่างเดียว ไม่ต้อง ETL เมื่อเปิดเว็บ
 
-สถานะการเผยแพร่จริงและข้อมูลสมาชิกที่ยังต้องยืนยันระบุใน [README](README.md) ไม่ถือว่า deploy สำเร็จจนกว่าจะมี URL ที่เปิดทดสอบได้
+วิธีเปิด Dashboard และข้อมูลสมาชิกระบุใน [README](README.md) การเผยแพร่แอปสาธารณะต้องมี URL ที่เปิดทดสอบได้

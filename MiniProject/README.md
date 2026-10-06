@@ -1,11 +1,5 @@
 # 3Eyes — จากคุณภาพสินค้า สู่การตัดสินใจลงทุน
 
-## Continue in a new Codex session
-
-Open this folder, then ask Codex to read [AGENTS.md](AGENTS.md) and [session notes](docs/SESSION_NOTES.md) before continuing. The existing plan is [PLAN_3Eyes_DW_Dashboard.md](PLAN_3Eyes_DW_Dashboard.md). No additional initialization is needed to run the existing dashboard.
-
-With the included virtual environment, run `.\.venv\Scripts\python.exe run.py app` and open http://localhost:8501. The visual refresh uses navy, teal, indigo, and colorful category charts. Shared styling lives in `dashboard/style.py` and `.streamlit/config.toml`. The optional [Power BI theme](config/powerbi_theme.json) can be imported in Power BI Desktop; it is a color theme rather than a complete report.
-
 > **ข้อมูลจำลองเพื่อการศึกษา** ไม่ใช่ผลทดสอบอุปกรณ์จริง: โรงงานมีของเสียหลุดจากจุดใด 3Eyes ช่วยลดความเสี่ยงได้แค่ไหน และต้องมีปริมาณงานเท่าไรจึงคุ้มลงทุน?
 
 Streamlit + SQLite, 5 หน้าจากปัญหา QC ไปถึง ROI ใช้ seed 42, 26 สัปดาห์, 120 lots และ 7 ประเภทตำหนิ + งานดี 1 กลุ่ม จำนวนตรวจ **97,717 แถว** แทน **48,063 น็อตจำลองไม่ซ้ำ**; assisted ทั้ง 3 สถานการณ์เป็นน็อตชุดเดียวกัน ห้ามนำมารวมเป็นยอดผลิต มีเคลม 416 แถว (จำนวนแถวไม่ใช่จำนวนคืน)
@@ -35,11 +29,9 @@ python run.py all
 
 ## สมาชิก
 
-| ชื่อ-สกุล | รหัสนักศึกษา | หน้าที่ |
-|---|---|---|
-| นายรณชัย ขาวสะอาด | 67160366 | รอทีมยืนยันหน้าที่จริง |
-
-ชื่อและรหัสข้างต้นมาจาก README เดิม ยังไม่ได้รับข้อมูลหน้าที่หรือสมาชิกเพิ่มเติม จึงไม่เติมข้อมูลบุคคลโดยคาดเดา
+| ชื่อ-สกุล | รหัสนักศึกษา |
+|---|---|
+| นายรณชัย ขาวสะอาด | 67160366 |
 
 ## ข้อมูลและหลักฐานส่งงาน
 

@@ -26,7 +26,7 @@ Environment: Python 3.11.9, dependencies pinned in `requirements.txt` (Streamlit
 
 ## Actual browser evidence
 
-Headless Chrome via Playwright captured [five screenshots](screenshots) from the running Streamlit app. No browser JavaScript errors or Streamlit exception elements were found. Screenshots are browser captures, not mockups. The screenshots include full main content; expanders remain closed by default.
+Headless Chrome via Playwright captured [five screenshots](screenshots) from the running Streamlit app before the current color and layout update. No browser JavaScript errors or Streamlit exception elements were found. The screenshots include full main content; expanders remain closed by default. All 12 tests also passed on the current dashboard version on 2026-10-07.
 
 ## Default results
 
@@ -44,8 +44,3 @@ Full precision and sample counts are in [default_kpis.csv](default_kpis.csv).
 | Modelled cost per unit (THB) | 0.423978 | 0.333845 |
 
 All three assisted scenarios share 24,827 physical simulated units; total distinct units across both periods are **48,063**, not 97,717. At baseline volume 7,771.93 units/month, Base net monthly benefit is **−799.50 THB** after subscriptions, so there is no payback. Base requires **16,643 whole units/month** to cover subscription fees alone; this does not repay the 90,000 THB capital investment.
-
-## Outstanding external steps
-
-- GitHub authentication is invalid for account 67160366. No remote push, merge or Community Cloud deployment has been performed; no public URL is claimed.
-- README preserves the existing verified member name/ID. Member responsibilities and any additional members require team input.
