@@ -6,3 +6,6 @@ __pycache__/
 data/warehouse/*.db
 data/quarantine/*
 !data/quarantine/.gitkeep
+
+!data/warehouse/threeeyes_dw.db
+.verification/

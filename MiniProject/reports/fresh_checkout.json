@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "checkout": "D:\\work\\MiniProject\\.verification\\release-mgwtb_c1\\checkout",
+  "source": "local submission Git snapshot, not remote GitHub",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "csv_reproducible": true,
+  "tests": "............                                                             [100%]\n12 passed in 26.88s",
+  "repository_root_app_test": "5 full-data pages passed from repository root",
+  "relative_dependencies": "PASS",
+  "snapshot_rows": {
+    "fact_inspection": 97717,
+    "fact_customer_claim": 416,
+    "fact_lot_summary": 240
+  }
+}

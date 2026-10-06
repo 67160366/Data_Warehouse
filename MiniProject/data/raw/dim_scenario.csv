@@ -1,0 +1,5 @@
+﻿scenario_key,scenario_name,description
+0,N/A,Manual baseline
+1,Conservative,สถานการณ์จำลอง ไม่ใช่ผลทดสอบ
+2,Base,สถานการณ์จำลอง ไม่ใช่ผลทดสอบ
+3,Optimistic,สถานการณ์จำลอง ไม่ใช่ผลทดสอบ

@@ -5,10 +5,11 @@ SELECT d.year,d.week_of_year,d.period_phase,f.inspection_mode,f.scenario_key,
  SUM(f.true_defect_key<>0) true_defects,
  SUM(f.true_defect_key<>0 AND f.final_decision='FAIL') caught,
  SUM(f.true_defect_key<>0 AND f.final_decision='PASS') escaped,
- SUM(f.true_defect_key=0 AND f.final_decision='FAIL') false_alarms,
+ SUM(f.true_defect_key=0 AND f.final_decision='FAIL') final_false_rejects,
+ SUM(f.true_defect_key=0 AND f.device_decision='FAIL') device_false_alarms,
  SUM(f.true_defect_key=0) good_units,SUM(f.final_decision='PASS') passed_units,
- SUM(f.device_decision='UNCERTAIN') uncertain_units,
- SUM(f.device_decision='FAIL') device_fail_units,SUM(f.override_flag) overrides,
+ SUM(COALESCE(f.device_decision='UNCERTAIN',0)) uncertain_units,
+ SUM(COALESCE(f.device_decision='FAIL',0)) device_fail_units,SUM(f.override_flag) overrides,
  AVG(f.inspect_seconds) avg_seconds
 FROM fact_inspection f JOIN dim_date d USING(date_key)
 GROUP BY d.year,d.week_of_year,d.period_phase,f.inspection_mode,f.scenario_key;

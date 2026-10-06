@@ -1,4 +1,4 @@
-param,value,unit,source,note
+﻿param,value,unit,source,note
 claim_cost_per_returned_unit,12,THB,ASSUMPTION,ตัวอย่างสมมติสำหรับงานการศึกษา
 rework_cost_per_returned_unit,8,THB,ASSUMPTION,ตัวอย่างสมมติสำหรับงานการศึกษา
 labor_cost_per_hour,120,THB/hour,ASSUMPTION,ค่าแรง QC สมมติ
@@ -6,5 +6,4 @@ customer_detection_rate,0.60,ratio,ASSUMPTION,สัดส่วนของเ�
 device_unit_price,18000,THB,ASSUMPTION,ราคาอุปกรณ์จำลอง
 device_subscription_per_month,300,THB/month,ASSUMPTION,ค่าบริการต่อเครื่องต่อเดือนสมมติ
 device_count,5,units,ASSUMPTION,จำนวนเครื่องในโรงงานจำลอง
-strictness_recall_delta_per_step,0.025,ratio,ASSUMPTION,ความไว recall ต่อการปรับ strictness หนึ่งระดับเพื่อสาธิต trade-off
-strictness_false_alarm_delta_per_step,0.008,ratio,ASSUMPTION,ความไว false alarm ต่อการปรับ strictness หนึ่งระดับเพื่อสาธิต trade-off
+confirmation_seconds,5,seconds/unit,ASSUMPTION,เวลาตรวจยืนยันเพิ่มเมื่อเครื่องให้ FAIL หรือ UNCERTAIN

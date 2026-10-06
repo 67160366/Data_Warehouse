@@ -1,9 +1,15 @@
-# Dashboard Storyboard
+# เรื่องเล่าจากมุมโรงงาน
 
-1. **ปัญหา** — Manual baseline escape PPM and estimated quality cost over time.
-2. **ตำหนิอยู่ตรงไหน** — Pareto of seven defect types, customer comparison, and highest defect-rate lots.
-3. **ทำไมคนพลาด** — Human miss rate by hour and shift, experience band, and defect type.
-4. **ทางออก 3Eyes** — Compare manual with the selected assisted scenario, showing escapes, defect recall, false alarms, uncertain rate, and inspection time.
-5. **ความคุ้มค่า** — Compare all three scenarios, project cumulative costs and break-even, and expose strictness trade-offs and assumptions.
+> โรงงานมีของเสียหลุดจากจุดใด 3Eyes ช่วยลดความเสี่ยงได้แค่ไหน และต้องมีปริมาณงานเท่าไรจึงคุ้มลงทุน?
 
-All pages show a simulated-data disclosure. Date, customer, line, scenario, and shift filters are shared.
+| หน้า | หลักฐานและการตัดสินใจ |
+|---|---|
+| 1 ปัญหาปัจจุบัน | PPM จำนวนหลุด จำนวนคืน และต้นทุนแยกองค์ประกอบ; แนวโน้มรายสัปดาห์ |
+| 2 จุดที่ควรแก้ก่อน | Pareto ของเสียที่ผ่าน QC; อัตราตำหนิของไลน์พร้อมจำนวนตัวอย่าง; lot ที่ควรตรวจสอบ |
+| 3 เงื่อนไขการพลาด | Human Miss Rate ตามชั่วโมง 1–8 กะ ประสบการณ์ และแสง; สมมติฐานเชิงสัมพันธ์ |
+| 4 ผลเมื่อมี 3Eyes | PPM/Recall ก่อน–หลัง, Recall รายตำหนิ, Device False Alarm, Final False Reject, Uncertain, Override และเวลา |
+| 5 การตัดสินใจลงทุน | ต้นทุนต่อหน่วย ตาราง 3 สถานการณ์ ROI 6 เดือน กราฟสะสม 24 เดือน และปริมาณที่ครอบคลุมค่าบริการ |
+
+ทุกหน้ามีป้ายข้อมูลจำลอง ประโยคสรุปจากข้อมูล และข้อเสนอการตัดสินใจเมื่อข้อมูลพอ สีชมพูแดงสื่อของเสีย สีครามสื่อ Manual สีเขียวอมฟ้าสื่อ 3Eyes และใช้สีแยกประเภทในกราฟ หน้า 1–3 ใช้ baseline; หน้า 4–5 แยกช่วง baseline และ assisted ชัดเจน เลือกตัวกรองว่างแสดงสถานะว่าง ขาดข้อมูลฝั่งใดไม่คำนวณ ROI
+
+ส่วนพับแสดง grain, seed, จำนวนแถวและหน่วยไม่ซ้ำ, hash snapshot, ETL status และสมมติฐานทั้งหมด ไม่มี strictness slider และไม่มีการนำแขนง “จับได้” กับ “หลุด” มาต่อเป็น funnel

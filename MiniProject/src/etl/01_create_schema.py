@@ -1,8 +1,8 @@
-from common import ROOT, connect
+from common import ROOT, DB_PATH, connect
 
 def main(reset=False):
-    if reset and (ROOT / "data/warehouse/threeeyes_dw.db").exists():
-        (ROOT / "data/warehouse/threeeyes_dw.db").unlink()
+    if reset and DB_PATH.exists():
+        DB_PATH.unlink()
     con = connect()
     con.executescript((ROOT / "src/schema.sql").read_text(encoding="utf-8"))
     con.commit(); con.close()

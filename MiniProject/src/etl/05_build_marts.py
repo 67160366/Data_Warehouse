@@ -21,7 +21,7 @@ def main():
             GROUP BY f.lot_key,f.scenario_key,f.inspection_mode""",(rate,))
             con.executescript((ROOT/"src/sql/kpi_views.sql").read_text(encoding="utf-8"))
         count=con.execute("SELECT COUNT(*) FROM fact_lot_summary").fetchone()[0]
-        finish_run(con,count,count)
+        finish_run(con, run_id=run, read=count, loaded=count)
     except Exception as e: fail_run(con,run,e); raise
     finally: con.close()
 

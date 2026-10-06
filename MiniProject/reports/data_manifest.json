@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "generation": {
+    "config": {
+      "seed": 42,
+      "weeks": 26,
+      "lots": 120,
+      "lot_size_min": 200,
+      "lot_size_max": 600,
+      "inspectors": 10,
+      "devices": 5,
+      "defect_rate_mean": 0.03,
+      "hot_lots": 4,
+      "claim_noise": 0.08,
+      "scenarios": [
+        {
+          "key": 1,
+          "name": "Conservative",
+          "device_recall": 0.75,
+          "false_alarm": 0.06,
+          "uncertain_rate": 0.12
+        },
+        {
+          "key": 2,
+          "name": "Base",
+          "device_recall": 0.85,
+          "false_alarm": 0.04,
+          "uncertain_rate": 0.08
+        },
+        {
+          "key": 3,
+          "name": "Optimistic",
+          "device_recall": 0.92,
+          "false_alarm": 0.03,
+          "uncertain_rate": 0.06
+        }
+      ]
+    },
+    "assumptions": {
+      "claim_cost_per_returned_unit": 12.0,
+      "rework_cost_per_returned_unit": 8.0,
+      "labor_cost_per_hour": 120.0,
+      "customer_detection_rate": 0.6,
+      "device_unit_price": 18000.0,
+      "device_subscription_per_month": 300.0,
+      "device_count": 5.0,
+      "confirmation_seconds": 5.0
+    }
+  },
+  "fact_load_run": 3,
+  "rejected": 0,
+  "rows": {
+    "fact_inspection": 97717,
+    "fact_customer_claim": 416,
+    "fact_lot_summary": 240
+  },
+  "distinct_units": 48063,
+  "sha256": {
+    "dim_date.csv": "39985b22f2bd2e9cc53bd7dbb36239b7798ff6e80638375a2c631055dc5030e0",
+    "dim_defect.csv": "e67bb69d405c17f07db3153b5aa0f4c27a432f0f7b05754e1e5702a14009f7d6",
+    "dim_device.csv": "862f40a2e216c81abf112270cd09cba256f2a8ef775f64ac56ec62931f25b6d0",
+    "dim_inspector.csv": "3c9f57d99bfafd2d175377a73cb36e29569836ec93b52178ce09db43ac783ed1",
+    "dim_lot.csv": "d2e10a24e34234ac712adc6b5bbdcfe0e26fc2ed942c32abcefdbd6846bec4a5",
+    "dim_scenario.csv": "b825d4f040a5483ca2e8d8836abb6685b3d01796fd3475f0ad43583e7a5b3a09",
+    "dim_shift.csv": "592e5d21b412c6ac7e16892e642ee5305b3e5c9d93b003e167c146e157dbe7d7",
+    "fact_customer_claim.csv": "f787f638e5bdee94252a8ae688d81607ab002b1e6de482b7aa7035bf7541250e",
+    "fact_inspection.csv": "aea75f26c33026b7ca58714515f95ab21a37bb46385d2128998a5491171e698f"
+  },
+  "database_sha256": "c63145715904f4f1350926c58f9be28f4757201fd84b1fac53c55a0bb5adc382"
+}

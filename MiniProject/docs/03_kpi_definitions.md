@@ -1,18 +1,48 @@
-# KPI Definitions
+# KPI และสูตรการตัดสินใจ
 
-| KPI | Definition |
-|---|---|
-| K1 Escape PPM | Escaped defective units ÷ units with final PASS × 1,000,000 |
-| K2 Final detection recall | Defective units with final FAIL ÷ all defective units |
-| K3 Recall by defect | K2 grouped by defect name |
-| K4 Human miss rate | Defective manual units with final PASS ÷ defective manual units, grouped by hour/shift |
-| K5 False alarm rate | Good units with final FAIL ÷ all good units |
-| K6 Device uncertain rate | Assisted units with device UNCERTAIN ÷ assisted units |
-| K7 Override rate | Override rows ÷ device FAIL recommendations |
-| K8 Inspection time / throughput | Mean inspect seconds; throughput = 3600 ÷ mean seconds |
-| K9 Defect rate by lot/customer | Ground-truth defective units ÷ units in lot. For assisted, scenario 2 is used for one representative count. |
-| K10 Cost of quality | Claim + rework + labor cost |
-| K11 Cost saving | Difference in per-unit K10 × comparable volume, less ongoing device subscription where projected |
-| K12 ROI / payback | Net cumulative savings after device cost ÷ device cost; payback = upfront device cost ÷ positive monthly net savings |
+สูตร Python ที่ Dashboard เรียกจริงอยู่ใน [src/metrics.py](../src/metrics.py); การรวมข้อมูลรายสัปดาห์และแยกตำหนิอยู่ใน [SQL views](../src/sql/kpi_views.sql) ห้ามเฉลี่ยเปอร์เซ็นต์ของแต่ละ lot: ต้องรวมตัวตั้งและตัวหารก่อนหาร ทุกอัตราแสดงจำนวนตัวอย่าง; ตัวหาร 0 คืน `None`/SQL `NULL` และแสดง “คำนวณไม่ได้”
 
-K1, K2, K5–K8 are also available from `vw_kpi_weekly`; defect recall, miss rate, and lot rates are available from their corresponding SQL views. Dashboard derives aggregate ratios from filtered facts to preserve correct denominator behavior. Cost inputs are in `config/assumptions.csv` and are all labeled as assumptions unless cited otherwise.
+| KPI | ตัวตั้ง | ตัวหาร / หน่วย |
+|---|---|---|
+| Escape PPM | ของเสียจริงที่ final PASS × 1,000,000 | final PASS ทั้งหมด |
+| Final Recall | ของเสียจริงที่ final FAIL | ของเสียจริงทั้งหมด |
+| Recall แยกตำหนิ | สูตร Recall ภายในประเภทตำหนิ | ของเสียจริงประเภทนั้น |
+| Human Miss Rate | ของเสียจริงที่ final PASS ใน manual | ของเสียจริงใน manual |
+| Device False Alarm | งานดีที่เครื่อง FAIL ใน assisted | งานดีใน assisted |
+| Final False Reject | งานดีที่ final FAIL | งานดีทั้งหมด |
+| Uncertain Rate | เครื่อง UNCERTAIN | จำนวน assisted |
+| Override Rate | เครื่อง FAIL แต่ final PASS | เครื่อง FAIL ทั้งหมด |
+| เวลาเฉลี่ย | ผลรวม inspect_seconds | จำนวนตรวจ (วินาที/ตัว) |
+| กำลังตรวจเชิงทฤษฎี | 3,600 | เวลาเฉลี่ย (ตัว/ชั่วโมงทำงาน) |
+| Defect Rate | ของเสียจริง | จำนวนตรวจ |
+| ต้นทุนคุณภาพในขอบเขตแบบจำลอง | เคลม + แก้ไขงานคืน + inspect_seconds × ค่าแรง/3,600 | บาท; หารจำนวนตรวจเพื่อได้บาท/ตัว |
+
+Device False Alarm ต่างจาก Final False Reject; override ไม่ใช่ความเชื่อใจโดยตรง จำนวนหลุดคือความจริงที่ generator รู้ แต่จำนวนคืนจากเคลมเป็นเพียงส่วนที่ลูกค้าตรวจพบและคืนสินค้า
+
+## ROI
+
+เลือก manual และ assisted คนละช่วงวันได้ ตัวกรองลูกค้า ไลน์ และกะใช้ร่วมกัน แต่ละ lot อยู่วันและกะเดียว จึงใช้ค่าเคลมทั้ง lot ได้โดยไม่แบ่งต้นทุนตามจำนวนแถวที่เหลือ ห้ามกรองบางหน่วยใน lot แล้วนำเคลมทั้ง lot มาใช้
+
+```text
+ปริมาณเริ่มต้น/เดือน = จำนวน baseline ที่เลือก / จำนวนวันในช่วง baseline (รวมวันแรกและสุดท้าย) × 30.4375
+ประหยัด/เดือน = (ต้นทุน manual/ตัว − ต้นทุน assisted/ตัว) × ปริมาณตรวจ/เดือน − ค่าบริการ/เดือน
+เงินลงทุน = ราคาเครื่อง × จำนวนเครื่อง
+สุทธิ 6 เดือน = ประหยัด/เดือน × 6 − เงินลงทุน
+ROI 6 เดือน = สุทธิ 6 เดือน / เงินลงทุน
+คืนทุน (เดือน) = เงินลงทุน / ประหยัดต่อเดือน เมื่อประหยัด > 0
+ปริมาณครอบคลุมค่าบริการ = ค่าบริการ / (ต้นทุน manual/ตัว − ต้นทุน assisted/ตัว) เมื่อส่วนต่าง > 0
+ต้นทุน Manual สะสมเดือน m = ต้นทุน manual/ตัว × ปริมาณ/เดือน × m
+ต้นทุน 3Eyes สะสมเดือน m = เงินลงทุน + (ต้นทุน assisted/ตัว × ปริมาณ/เดือน + ค่าบริการ) × m
+```
+
+ช่วงเริ่มต้น baseline 2025-01-06 ถึง 2025-04-06 = 91 วัน (13 สัปดาห์); assisted 2025-04-07 ถึง 2025-07-06 = 91 วัน การเปลี่ยนช่วง baseline เปลี่ยนตัวหารวันจริง ส่วนตัวกรอง lot ไม่ตัดวันที่ไม่มีการผลิตออกจากระยะสังเกต
+
+ตารางและกราฟ 0–24 เดือนเรียก `investment()` เดียวกัน ขาดข้อมูลฝั่งใดหยุดคำนวณ; ผลประหยัดไม่บวกแสดง “ไม่คืนทุนภายใต้สมมติฐานนี้” จุดครอบคลุมค่าบริการแสดงโดยปัดขึ้นเป็นจำนวนเต็ม และไม่ใช่จุดคืนเงินลงทุน ส่วน ROI ของเงินลงทุนศูนย์คำนวณไม่ได้
+
+มูลค่าเวลาที่ลดลงคือ **ผลประโยชน์เทียบเท่าค่าแรง** เงินเดือนอาจยังจ่ายเท่าเดิม ขอบเขตต้นทุนไม่รวมงานดีที่คัดทิ้ง ค่าบำรุงรักษา ดอกเบี้ย ภาษี หรือยอดขายที่สูญเสีย
+
+## ตัวอย่างตรวจด้วยมือ
+
+น็อต 5 ตัว: ของเสีย 2 ตัว จับได้ 1 หลุด 1; final PASS 3 ตัว → PPM 333,333.33 และ Recall 50% งานดี 3 ตัว เครื่อง FAIL 2 แต่ final FAIL เพียง 1 → Device False Alarm 66.67% และ Final False Reject 33.33%
+
+ต้นทุน manual 2 บาท/ตัว assisted 1 บาท/ตัว ปริมาณ 1,000 ตัว/เดือน ค่าบริการ 100 บาท ลงทุน 1,800 บาท → ประหยัด 900 บาท/เดือน คืนทุน 2 เดือน ROI 6 เดือน 200% ตัวอย่างนี้เป็น fixture ใน `tests/test_kpi.py` ไม่ใช่ผลข้อมูลชุดใหญ่

@@ -1,0 +1,7 @@
+{
+  "name": "3Eyes Factory Decision",
+  "dataColors": ["#0D9488", "#6366F1", "#F59E0B", "#E85D75", "#0284C7", "#A855F7", "#84A329"],
+  "background": "#FFFFFF",
+  "foreground": "#172A46",
+  "tableAccent": "#0D9488"
+}

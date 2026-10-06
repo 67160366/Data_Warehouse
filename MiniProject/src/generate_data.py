@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -43,7 +44,7 @@ def make_data(config=None, assumptions=None):
     start = date(2025, 1, 6)
     weeks = c["weeks"]
     week_starts = [start + timedelta(days=7 * i) for i in range(weeks)]
-    dates = [start + timedelta(days=i) for i in range(weeks * 7 + 5)]
+    dates = [start + timedelta(days=i) for i in range(weeks * 7)]
     n_lots = c["lots"]
     hot = set(rng.choice(np.arange(1, n_lots + 1), size=min(c["hot_lots"], n_lots), replace=False).tolist())
 
@@ -82,20 +83,26 @@ def make_data(config=None, assumptions=None):
         day = week_starts[week_idx] + timedelta(days=int(rng.integers(0, 5)))
         lot_size = int(rng.integers(c["lot_size_min"], c["lot_size_max"] + 1))
         lot_code = f"LOT-{lot_idx:04}"
-        customer = ["ลูกค้า A", "ลูกค้า B", "ลูกค้า C"][lot_idx % 3]
+        customer = ["ลูกค้า A", "ลูกค้า B", "ลูกค้า C"][int(rng.integers(0, 3))]
         line = ["LINE-1", "LINE-2", "LINE-3"][lot_idx % 3]
         lots.append({"lot_key": lot_idx, "lot_code": lot_code, "customer_name": customer,
                      "production_line": line, "lot_size": lot_size, "production_date": day.isoformat()})
-        defect_rate = float(np.clip(rng.beta(2, 65), .005, .12))
+        defect_rate = float(rng.beta(c["defect_rate_mean"] * 67, (1-c["defect_rate_mean"]) * 67))
         if lot_idx in hot:
             defect_rate = float(rng.uniform(.08, .14))
         defect_keys = np.zeros(lot_size, dtype=int)
         defective = rng.random(lot_size) < defect_rate
         defect_keys[defective] = rng.choice(np.arange(1, 8), size=int(defective.sum()), p=DEFECT_WEIGHTS)
         shift_key = int(rng.integers(1, 4))
-        hours = rng.integers(1, 13, size=lot_size)
+        lots[-1]["shift_key"] = shift_key
+        hours = rng.integers(1, 9, size=lot_size)
         inspector_keys = rng.integers(1, len(dim_inspector) + 1, size=lot_size)
         lighting = rng.choice(["good", "dim", "glare"], size=lot_size, p=[.65, .2, .15])
+        # Pair truth, human behavior, timing and random draws across scenarios.
+        human_draw, reject_draw, uncertain_draw, device_draw, confirm_draw, rescue_draw = rng.random((6, lot_size))
+        base_seconds = rng.lognormal(np.log(6.8 if assisted else 8.0), .24, lot_size)
+        assigned_devices = rng.integers(1, len(dim_device) + 1, size=lot_size)
+        claim_draw = rng.uniform(1-c["claim_noise"], 1+c["claim_noise"], 8)
         for scenario in ([None] if not assisted else c["scenarios"]):
             skey = 0 if scenario is None else scenario["key"]
             mode = "manual" if scenario is None else "assisted"
@@ -107,52 +114,46 @@ def make_data(config=None, assumptions=None):
             human_prob = np.zeros(lot_size)
             mask = ~good
             human_prob[mask] = BASE_RECALL[defect_keys[mask] - 1] * fatigue[mask] * experience[mask] * light_factor[mask]
-            human_catches = rng.random(lot_size) < human_prob
+            human_catches = human_draw < human_prob
             dev_decision = np.full(lot_size, None, dtype=object)
-            anomaly = np.full(lot_size, np.nan)
-            strictness = np.full(lot_size, np.nan)
             override = np.zeros(lot_size, dtype=int)
             if mode == "manual":
                 final[mask] = human_catches[mask]
-                final[good] = (rng.random(int(good.sum())) < .015)
-                seconds = rng.lognormal(np.log(8.0), .25, lot_size)
+                final[good] = (reject_draw[good] < .015)
+                seconds = base_seconds.copy()
                 device_keys = np.full(lot_size, np.nan)
             else:
                 uncertain_p = scenario["uncertain_rate"]
-                uncertain = rng.random(lot_size) < uncertain_p
+                uncertain = uncertain_draw < uncertain_p
                 device_fail = np.zeros(lot_size, dtype=bool)
                 # Conditional recall among non-uncertain defective items.
                 dm = mask & ~uncertain
-                device_fail[dm] = rng.random(int(dm.sum())) < min(.995, scenario["device_recall"] / (1 - uncertain_p))
+                device_fail[dm] = device_draw[dm] < min(.995, scenario["device_recall"] / (1 - uncertain_p))
                 gm = good & ~uncertain
-                device_fail[gm] = rng.random(int(gm.sum())) < scenario["false_alarm"] / (1 - uncertain_p)
+                device_fail[gm] = device_draw[gm] < scenario["false_alarm"] / (1 - uncertain_p)
                 dev_decision[:] = "PASS"
                 dev_decision[uncertain] = "UNCERTAIN"
                 dev_decision[device_fail] = "FAIL"
                 # FAIL recommendations are mostly confirmed; rare override can release a defect.
-                confirm = rng.random(lot_size) < .94
+                confirm = confirm_draw < .94
                 final[device_fail] = confirm[device_fail]
                 override[device_fail & ~confirm] = 1
                 final[uncertain] = human_catches[uncertain]
+                final[good & uncertain] = reject_draw[good & uncertain] < .015
                 # Human can occasionally catch a device PASS missed defect.
                 missed = mask & ~device_fail & ~uncertain
-                final[missed] = rng.random(int(missed.sum())) < (human_prob[missed] * .18)
+                final[missed] = rescue_draw[missed] < (human_prob[missed] * .18)
                 final[good & ~device_fail & ~uncertain] = 0
-                anomaly = np.clip(rng.normal(.72, .16, lot_size), 0, 1)
-                anomaly[mask] = np.clip(rng.normal(.69, .18, int(mask.sum())), 0, 1)
-                strictness[:] = 3
-                seconds = rng.lognormal(np.log(6.8), .24, lot_size)
-                device_keys = rng.integers(1, len(dim_device) + 1, size=lot_size)
+                seconds = base_seconds + (device_fail | uncertain) * a["confirmation_seconds"]
+                device_keys = assigned_devices
             rows = []
             for i in range(lot_size):
-                rows.append({"inspection_id": inspection_id, "date_key": int(day.strftime("%Y%m%d")),
+                rows.append({"inspection_id": inspection_id, "unit_id": f"{lot_code}-{i+1:04}", "date_key": int(day.strftime("%Y%m%d")),
                     "shift_key": shift_key, "inspector_key": int(inspector_keys[i]),
                     "device_key": None if mode == "manual" else int(device_keys[i]), "lot_key": lot_idx,
                     "scenario_key": skey, "true_defect_key": int(defect_keys[i]), "inspection_mode": mode,
                     "hour_in_shift": int(hours[i]), "lighting_cond": str(lighting[i]),
                     "device_decision": None if mode == "manual" else str(dev_decision[i]),
-                    "anomaly_score": None if mode == "manual" else float(anomaly[i]),
-                    "strictness_level": None if mode == "manual" else int(strictness[i]),
                     "final_decision": "FAIL" if final[i] else "PASS", "override_flag": int(override[i]),
                     "inspect_seconds": float(seconds[i])})
                 inspection_id += 1
@@ -163,7 +164,7 @@ def make_data(config=None, assumptions=None):
                 if row["true_defect_key"] and row["final_decision"] == "PASS":
                     escaped[row["true_defect_key"]] = escaped.get(row["true_defect_key"], 0) + 1
             for dkey, qty in escaped.items():
-                returned = max(0, int(round(qty * a["customer_detection_rate"] * rng.uniform(1-c["claim_noise"], 1+c["claim_noise"]))))
+                returned = min(qty, max(0, int(round(qty * a["customer_detection_rate"] * claim_draw[dkey]))))
                 claims.append({"claim_id": claim_id, "date_key": int(day.strftime("%Y%m%d")), "lot_key": lot_idx,
                     "defect_key": dkey, "scenario_key": skey, "qty_returned": returned,
                     "claim_cost": returned * a["claim_cost_per_returned_unit"],
@@ -173,7 +174,7 @@ def make_data(config=None, assumptions=None):
     return {"dim_date": dim_date, "dim_shift": dim_shift, "dim_inspector": dim_inspector,
             "dim_device": dim_device, "dim_lot": dim_lot, "dim_defect": dim_defect,
             "dim_scenario": dim_scenario, "fact_inspection": pd.DataFrame(inspections),
-            "fact_customer_claim": pd.DataFrame(claims)}
+            "fact_customer_claim": pd.DataFrame(claims, columns=["claim_id", "date_key", "lot_key", "defect_key", "scenario_key", "qty_returned", "claim_cost", "rework_cost"])}
 
 
 def generate(out_dir=None):
@@ -181,7 +182,9 @@ def generate(out_dir=None):
     out.mkdir(parents=True, exist_ok=True)
     data = make_data()
     for name, frame in data.items():
-        frame.to_csv(out / f"{name}.csv", index=False, encoding="utf-8")
+        frame.to_csv(out / f"{name}.csv", index=False, encoding="utf-8-sig")
+    (out / "generation_metadata.json").write_text(json.dumps({"config": load_config(), "assumptions": load_assumptions()},
+                                                           ensure_ascii=False, indent=2), encoding="utf-8")
     return data
 
 

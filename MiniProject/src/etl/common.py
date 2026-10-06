@@ -1,12 +1,15 @@
 from __future__ import annotations
 import json
+import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-DB_PATH = ROOT / "data/warehouse/threeeyes_dw.db"
-RAW_PATH = ROOT / "data/raw"
+DB_PATH = Path(os.environ.get("THREEEYES_DB", ROOT / "data/warehouse/threeeyes_dw.db"))
+RAW_PATH = Path(os.environ.get("THREEEYES_RAW", ROOT / "data/raw"))
+
+REPORT_PATH = Path(os.environ.get("THREEEYES_REPORTS", ROOT / "reports"))
 
 def connect():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -17,7 +20,7 @@ def connect():
 
 def start_run(con, step):
     cur = con.execute("INSERT INTO etl_run_log(started_at,step_name,status) VALUES(?,?,?)",
-                      (datetime.now(timezone.utc).isoformat(), step, "success"))
+                      (datetime.now(timezone.utc).isoformat(), step, "running"))
     con.commit()
     return cur.lastrowid
 

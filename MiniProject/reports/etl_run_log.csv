@@ -1,0 +1,6 @@
+﻿run_id,started_at,finished_at,step_name,rows_read,rows_loaded,rows_rejected,status,message
+1,2026-10-05T16:54:10.165985+00:00,2026-10-05T16:54:10.990391+00:00,load_staging,98465,98465,0,success,
+2,2026-10-05T16:54:12.293772+00:00,2026-10-05T16:54:12.328369+00:00,load_dimensions,332,332,0,success,
+3,2026-10-05T16:54:12.641049+00:00,2026-10-05T16:54:18.105095+00:00,load_facts,98133,98133,0,success,staging = loaded + quarantined; both facts validated
+4,2026-10-05T16:54:19.219077+00:00,2026-10-05T16:54:19.414046+00:00,build_marts,240,240,0,success,
+5,2026-10-05T16:54:20.671334+00:00,2026-10-05T16:54:21.587182+00:00,validate,11,11,0,success,PASS

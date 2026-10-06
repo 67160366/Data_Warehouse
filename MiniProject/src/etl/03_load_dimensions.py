@@ -8,10 +8,9 @@ def main():
         total=loaded=0
         with con:
             for table,key in TABLES.items():
-                df=pd.read_csv(RAW_PATH/f"{table}.csv")
+                df=pd.read_sql_query(f"SELECT * FROM stg_{table}", con)
                 total+=len(df)
                 if df[key].duplicated().any(): raise ValueError(f"duplicate {key} in {table}")
-                df.to_sql("stg_"+table,con,if_exists="replace",index=False)
                 cols=list(df.columns); marks=",".join("?" for _ in cols)
                 updates=",".join(f"{col}=excluded.{col}" for col in cols if col != key)
                 sql=f"INSERT INTO {table}({','.join(cols)}) VALUES({marks}) ON CONFLICT({key}) DO UPDATE SET {updates}"
